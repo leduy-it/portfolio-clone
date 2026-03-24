@@ -1,8 +1,18 @@
-'use client'
+import dynamic from 'next/dynamic'
+import { SUGGESTIONS } from '@/data/terminal-suggestions'
 
-import { HeroSection } from '@/components/home/hero-section'
-import { TerminalChat, SUGGESTIONS } from '@/components/home/terminal-chat'
-import { HomeBackgroundWrapper } from '@/components/home/home-background-wrapper'
+const HomeBackgroundWrapper = dynamic(
+  () => import('@/components/home/home-background-wrapper').then(m => ({ default: m.HomeBackgroundWrapper })),
+)
+
+const TerminalChat = dynamic(
+  () => import('@/components/home/terminal-chat').then(m => ({ default: m.TerminalChat })),
+  { loading: () => <div className="w-full h-[320px] rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] animate-pulse" /> }
+)
+
+const HeroSection = dynamic(
+  () => import('@/components/home/hero-section').then(m => ({ default: m.HeroSection })),
+)
 
 export default function HomePage() {
   return (

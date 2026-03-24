@@ -26,8 +26,11 @@ type FilterCategory = 'all' | 'portrait' | 'street'
 export default function PhotoGallery({ photos }: PhotoGalleryProps) {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('all')
 
-  const portraitCount = photos.filter((p) => p.category === 'portrait').length
-  const streetCount = photos.filter((p) => p.category === 'street').length
+  let portraitCount = 0, streetCount = 0
+  for (const p of photos) {
+    if (p.category === 'portrait') portraitCount++
+    else if (p.category === 'street') streetCount++
+  }
 
   const filtered =
     activeFilter === 'all'

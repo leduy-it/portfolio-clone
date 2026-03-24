@@ -8,6 +8,7 @@ export default function PhotographyHero() {
         alt="Brussels Beekkant station"
         fill
         className="object-cover object-center"
+        sizes="100vw"
         priority
       />
       {/* Dark overlay gradient */}

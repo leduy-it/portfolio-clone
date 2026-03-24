@@ -90,7 +90,7 @@ export function Header() {
       </div>
 
       {/* Mobile dropdown nav */}
-      {mobileOpen && (
+      {mobileOpen ? (
         <div className="xl:hidden bg-[rgb(var(--surface-page))] border-t border-[rgb(var(--border))] px-4 py-4 flex flex-col gap-3 mt-2">
           {navLinks.map(({ label, href }) => {
             const isActive = pathname === href
@@ -122,7 +122,7 @@ export function Header() {
             </svg>
           </Link>
         </div>
-      )}
+      ) : null}
     </header>
   )
 }
