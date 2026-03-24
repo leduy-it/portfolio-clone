@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-family-mono: var(--font-jetbrains-mono), monospace;
+
+  /* Design token colors */
+  --color-background: rgb(10 26 47);
+  --color-foreground: rgb(255 255 255);
+  --color-accent: rgb(102 252 241);
+  --color-accent-hover: rgb(79 209 199);
+  --color-surface-card: rgb(22 35 50);
+  --color-surface-overlay: rgb(30 41 54);
+  --color-text-secondary: rgb(203 213 225);
+  --color-text-muted: rgb(148 163 184);
+  --color-border: rgb(45 55 72);
+  --color-border-muted: rgb(74 85 104);
+  --color-terminal-red: rgb(239 68 68);
+  --color-terminal-yellow: rgb(234 179 8);
+  --color-terminal-green: rgb(34 197 94);
+}
+
+/* Theme CSS variables */
+:root {
+  --background: 10 26 47;
+  --foreground: 255 255 255;
+  --accent: 102 252 241;
+  --accent-hover: 79 209 199;
+  --surface-card: 22 35 50;
+  --surface-overlay: 30 41 54;
+  --text-primary: 255 255 255;
+  --text-secondary: 203 213 225;
+  --text-muted: 148 163 184;
+  --border: 45 55 72;
+  --border-muted: 74 85 104;
+  --header-bg: 10 26 47;
+  --terminal-prompt: 102 252 241;
+}
+
+.light {
+  --background: 248 249 250;
+  --foreground: 15 23 42;
+  --accent: 20 184 166;
+  --accent-hover: 13 148 136;
+  --surface-card: 248 250 252;
+  --surface-overlay: 241 245 249;
+  --text-primary: 15 23 42;
+  --text-secondary: 51 65 85;
+  --text-muted: 100 116 139;
+  --border: 203 213 225;
+  --border-muted: 226 232 240;
+  --header-bg: 248 249 250;
+  --terminal-prompt: 181 137 0;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  transition: background-color 0.3s, color 0.3s;
+}

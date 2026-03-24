@@ -1,0 +1,134 @@
+[
+  {
+    "id": "001",
+    "slug": "growtrics",
+    "title": "Founding Software Engineer",
+    "company": "GrowtricsAI",
+    "dates": "May 2025 – Dec 2025",
+    "quote": "Probably pulled a '997' (outdoing the infamous 996), but honestly loved every moment in such a fast-paced environment with brilliant, relentless founders!",
+    "missions": [
+      "Architected a document-parsing pipeline to replace manual labeling, converting unstructured educational content into structured Q&A data, which achieved ~83% conversion rate, accurately populating 10k+ questions.",
+      "Developed a video generation pipeline using LangGraph + Flutter that transforms students' graded performance into personalised, step-by-step explainer videos to address student's misconceptions.",
+      "Defined SLOs and cost projections for GenAI workloads; owned entire document-parsing features roadmap to raise extraction quality and extend coverage across subjects, curricula, languages, and modalities."
+    ],
+    "skills": ["LangGraph", "LLMs", "GCP", "Flutter", "Weaviate"],
+    "image": "/images/experience/growtrics_v2.png",
+    "logo": "/images/GrowtricsAI_logo.jpg",
+    "checksum": "0x3E4"
+  },
+  {
+    "id": "002",
+    "slug": "nvidia-research",
+    "title": "Generative AI Researcher Intern",
+    "company": "SIT x NVIDIA AI Center",
+    "dates": "Dec 2024 – Sep 2025",
+    "quote": "Was shocked to find our original engine would take centuries to generate the dataset we needed, but we pulled through... An awesome virgin experience to multimodal AI research!",
+    "missions": [
+      "[MANUSCRIPT IN PREPARATION] SynDORBench: Benchmarking Human Detection and Action Recognition with DORI-Calibrated Distances.",
+      "Engineered a scalable synthetic-data engine using open-source datasets (SMPL-X, AMASS, and BABEL) and implemented an auto-labeling mechanism (pose/bbox/mask), which accelerates CV/VLM data collection.",
+      "Developed a DORI-aligned surveillance dataset (200k+ images & 630k+ QA pairs) with controlled context parameters to enable robust benchmarking of presence & action recognition models.",
+      "Built a unified evaluation framework for human-presence & action recognition, with Hydra configs and Docker/CUDA to benchmark YOLO models against compact LVLMs."
+    ],
+    "skills": ["PyTorch", "CUDA", "Blender", "LVLMs", "Multimodal"],
+    "image": "/images/experience/sit_nvidia_v2.png",
+    "logo": "/images/Nvidia_logo.jpg",
+    "checksum": "0x5F5"
+  },
+  {
+    "id": "003",
+    "slug": "outsight",
+    "title": "Algorithm Engineer Intern",
+    "company": "Outsight",
+    "dates": "Feb 2024 – Jul 2024",
+    "quote": "Easily the highlight of my undergraduate journey, got to work in a foreign country with awesome people and some seriously cool technology!",
+    "missions": [
+      "Improved perception validation accuracy by 67% in large-scale environments through high-fidelity People Flow Monitoring simulations with realistic crowd dynamics and stochastic destination assignments (UE4/CARLA).",
+      "Supported pre-deployment validation of over 300 LiDARs across multiple terminals at a major SEA airport.",
+      "Cut simulation setup time by over 90% via an end-to-end scenario tooling suite for scenario configuration, point-cloud dataset generation, and fixed-seed regression checks, accelerating iteration velocity for algorithm team."
+    ],
+    "skills": ["Python", "UE4", "CARLA", "LiDAR", "Simulations"],
+    "image": "/images/experience/outsight_v2.png",
+    "logo": "/images/Outsight_logo.jpg",
+    "checksum": "0x377"
+  },
+  {
+    "id": "004",
+    "slug": "dso-cv",
+    "title": "Computer Vision Engineer Intern",
+    "company": "DSO National Laboratories",
+    "dates": "May 2023 – Aug 2023",
+    "quote": "Experienced the pain of working with a new symbolic computation library with very few documentation. Great learning curve and definitely not for the weak!",
+    "missions": [
+      "Increased drone navigation accuracy by 20% in low-light, high-speed conditions by developing an Event-based Stereo Visual Odometry (ESVO) system using C++.",
+      "Achieved 5x latency reduction in state estimation (80%↓) by re-implementing non-linear solvers with SymForce symbolic computations, enabling real-time control feedback in drone navigation systems."
+    ],
+    "skills": ["C++", "3D CV", "Event Cam", "SymForce", "Robotics"],
+    "image": "/images/experience/dso_drone_v2.png",
+    "logo": "/images/DSO_logo.jpg",
+    "checksum": "0x24C"
+  },
+  {
+    "id": "005",
+    "slug": "bumblebee",
+    "title": "Student Trainee",
+    "company": "Bumblebee Autonomous Systems",
+    "dates": "Aug 2022 – Jan 2023",
+    "quote": "Working underwater taught me that failure modes are everywhere. When GPS doesn't work, you learn to rely on sound. When sensors fail, you build redundancy. Resilience isn't optional.",
+    "missions": [
+      "Developed and tuned a three-hydrophone acoustic-localization system, boosting mission navigation accuracy by 40%.",
+      "Contributed across perception, hardware integration, and signal-processing tasks in the AUV development lifecycle."
+    ],
+    "skills": ["DSP", "Robotics", "AUV", "Acoustics"],
+    "image": "/images/experience/bumblebee_v2.png",
+    "logo": "/images/Bumblebee_logo.jpg",
+    "checksum": "0x3A3"
+  },
+  {
+    "id": "006",
+    "slug": "dso-rf",
+    "title": "Radio Frequency Engineer Intern",
+    "company": "DSO National Laboratories",
+    "dates": "Oct 2019 – Dec 2019",
+    "quote": "Probably the only person to say that I have built a drone jammer using a repurposed luncheon meat can!",
+    "missions": [
+      "Investigated various electronic jamming techniques ranging from dynamic barrage to swept frequency jamming.",
+      "Spearheaded the design of a novel antenna using a repurposed luncheon meat can as the waveguide to effectively propagate the jamming signals.",
+      "Leveraged state-of-the-art ADALM Pluto Software Defined Radios (SDRs) to generate powerful, precision-tuned jamming signals, ensuring optimal efficacy in disabling drone control links.",
+      "Successfully disrupted the control link between a Parrot Mambo drone and its controller (phone), validating the viability of our solution."
+    ],
+    "skills": ["Python", "RF", "SDR", "DSP"],
+    "image": "/images/experience/dso_drone_jammer_v2.png",
+    "logo": "/images/DSO_logo.jpg",
+    "checksum": "0x24B"
+  },
+  {
+    "id": "007",
+    "slug": "dso-research",
+    "title": "Student Researcher",
+    "company": "DSO National Laboratories",
+    "dates": "Jan 2018 – Dec 2018",
+    "quote": "Took up this research opportunity as a high schooler and managed to find a mentor that reignited my interest in learning and programming!",
+    "missions": [
+      "Investigated the approach for the characterisation, calibration, and compensation of channel mismatches in a Quadrature Modulated Waveform Generator (QMWG).",
+      "Error analysis was done using the Figure of Merit (FoM) as the performance metric.",
+      "Appropriate calibration and compensation were implemented and then tested using Python to confirm the effectiveness."
+    ],
+    "skills": ["Python", "DSP", "RF", "Research"],
+    "image": "/images/experience/dso_student_research_v2.png",
+    "logo": "/images/DSO_logo.jpg",
+    "checksum": "0x4C0"
+  },
+  {
+    "id": "008",
+    "slug": "whats-next",
+    "title": "What's Next?",
+    "company": "???",
+    "dates": "",
+    "quote": "The next chapter is unwritten. But the story so far? Worth every line.",
+    "missions": [],
+    "skills": [],
+    "image": "",
+    "logo": null,
+    "checksum": "0x???"
+  }
+]

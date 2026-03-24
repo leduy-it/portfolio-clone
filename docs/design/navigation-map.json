@@ -1,0 +1,56 @@
+{
+  "baseUrl": "https://benedictchan.vercel.app",
+  "capturedAt": "2026-03-23T16:43:47.353Z",
+  "links": [
+    {
+      "text": "Benedict.",
+      "href": "/",
+      "location": "nav/header"
+    },
+    {
+      "text": "About me",
+      "href": "/",
+      "location": "nav/header"
+    },
+    {
+      "text": "Experience",
+      "href": "/experience",
+      "location": "nav/header"
+    },
+    {
+      "text": "Blog",
+      "href": "/blog",
+      "location": "nav/header"
+    },
+    {
+      "text": "Photography",
+      "href": "/photography",
+      "location": "nav/header"
+    },
+    {
+      "text": "Resume",
+      "href": "/Benedict_Resume.pdf",
+      "location": "nav/header"
+    },
+    {
+      "text": "About me",
+      "href": "/",
+      "location": "nav/header"
+    },
+    {
+      "text": "Experience",
+      "href": "/experience",
+      "location": "nav/header"
+    },
+    {
+      "text": "Blog",
+      "href": "/blog",
+      "location": "nav/header"
+    },
+    {
+      "text": "Photography",
+      "href": "/photography",
+      "location": "nav/header"
+    }
+  ]
+}
