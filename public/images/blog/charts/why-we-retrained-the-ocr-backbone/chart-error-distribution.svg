@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace">
+  <title id="title">Where the model lost trust — OCR error categories from a week of production logs</title>
+  <desc id="desc">Illustrative bar chart showing roughly half of failures concentrated in diacritics collapse and thin-stroke loss, with smaller shares from table headers and low-contrast scans.</desc>
+
+  <!-- Background -->
+  <rect width="960" height="480" fill="#0e0e10"/>
+
+  <!-- Frame strokes -->
+  <g stroke="#27272a" stroke-width="1">
+    <line x1="80"  y1="80"  x2="80"  y2="400"/>
+    <line x1="80"  y1="400" x2="900" y2="400"/>
+  </g>
+
+  <!-- Y-axis grid + labels -->
+  <g font-size="11" fill="#52525b">
+    <g stroke="#1f1f23" stroke-dasharray="2 4">
+      <line x1="80" y1="336" x2="900" y2="336"/>
+      <line x1="80" y1="272" x2="900" y2="272"/>
+      <line x1="80" y1="208" x2="900" y2="208"/>
+      <line x1="80" y1="144" x2="900" y2="144"/>
+      <line x1="80" y1="80"  x2="900" y2="80"/>
+    </g>
+    <text x="70" y="404" text-anchor="end">0%</text>
+    <text x="70" y="340" text-anchor="end">10%</text>
+    <text x="70" y="276" text-anchor="end">20%</text>
+    <text x="70" y="212" text-anchor="end">30%</text>
+    <text x="70" y="148" text-anchor="end">40%</text>
+    <text x="70" y="84"  text-anchor="end">50%</text>
+  </g>
+
+  <!-- Heading -->
+  <g fill="#fafafa">
+    <text x="80" y="44" font-size="18" font-weight="700">share of failed pages by error type</text>
+    <text x="80" y="64" font-size="11" fill="#a1a1aa">illustrative — one week, internal eval, not benchmark numbers</text>
+  </g>
+
+  <!-- Bars -->
+  <!--
+    bar widths = 100, gap = 56, start x=120
+    heights mapped from 320px=50%
+    diacritics    ~ 36% -> h = 230
+    thin-stroke   ~ 24% -> h = 154
+    table-header  ~ 16% -> h = 102
+    low-contrast  ~ 12% -> h = 77
+    other glyph   ~ 8%  -> h = 51
+  -->
+  <g>
+    <!-- diacritics -->
+    <rect x="120" y="170" width="100" height="230" fill="#bef264" rx="2"/>
+    <rect x="120" y="170" width="100" height="6"   fill="#d9f99d" rx="2"/>
+    <text x="170" y="160" text-anchor="middle" font-size="13" font-weight="700" fill="#bef264">~36%</text>
+
+    <!-- thin-stroke -->
+    <rect x="276" y="246" width="100" height="154" fill="#bef264" fill-opacity="0.78" rx="2"/>
+    <text x="326" y="236" text-anchor="middle" font-size="13" font-weight="700" fill="#bef264">~24%</text>
+
+    <!-- table-header -->
+    <rect x="432" y="298" width="100" height="102" fill="#bef264" fill-opacity="0.6" rx="2"/>
+    <text x="482" y="288" text-anchor="middle" font-size="13" font-weight="700" fill="#bef264">~16%</text>
+
+    <!-- low-contrast -->
+    <rect x="588" y="323" width="100" height="77" fill="#bef264" fill-opacity="0.45" rx="2"/>
+    <text x="638" y="313" text-anchor="middle" font-size="13" font-weight="700" fill="#bef264">~12%</text>
+
+    <!-- other glyph drift -->
+    <rect x="744" y="349" width="100" height="51" fill="#bef264" fill-opacity="0.32" rx="2"/>
+    <text x="794" y="339" text-anchor="middle" font-size="13" font-weight="700" fill="#a1a1aa">~8%</text>
+  </g>
+
+  <!-- X-axis labels (two-line wrap) -->
+  <g font-size="11" fill="#d4d4d8" text-anchor="middle">
+    <text x="170" y="424">diacritics</text>
+    <text x="170" y="438" fill="#71717a">collapse (VI)</text>
+
+    <text x="326" y="424">thin-stroke</text>
+    <text x="326" y="438" fill="#71717a">loss (JP)</text>
+
+    <text x="482" y="424">table-header</text>
+    <text x="482" y="438" fill="#71717a">brittleness</text>
+
+    <text x="638" y="424">low-contrast</text>
+    <text x="638" y="438" fill="#71717a">scans</text>
+
+    <text x="794" y="424">other glyph</text>
+    <text x="794" y="438" fill="#71717a">drift</text>
+  </g>
+
+  <!-- Footnote -->
+  <g font-size="10" fill="#52525b">
+    <text x="80" y="468">y-axis: % of failed pages, weighted by customer-visible severity. n ≈ 4.2k flagged pages.</text>
+  </g>
+</svg>

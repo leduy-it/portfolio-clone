@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc" font-family="'JetBrains Mono', 'Fira Code', ui-monospace, monospace">
+  <title id="title">Personal skill arc across 18 months</title>
+  <desc id="desc">Two curves comparing what I thought I was learning (smooth) vs what I was actually learning (lumpy with dips, then climbing higher).</desc>
+
+  <defs>
+    <linearGradient id="lime-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bef264" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#bef264" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="orange-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="40" patternUnits="userSpaceOnUse">
+      <path d="M60 0 L0 0 0 40" fill="none" stroke="#1f2937" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="480" fill="#0a0a0a"/>
+
+  <!-- Plot area background -->
+  <rect x="80" y="60" width="800" height="340" fill="url(#grid)" opacity="0.7"/>
+
+  <!-- Axes -->
+  <line x1="80" y1="400" x2="880" y2="400" stroke="#475569" stroke-width="1.5"/>
+  <line x1="80" y1="60" x2="80" y2="400" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- Axis labels -->
+  <text x="480" y="445" fill="#94a3b8" font-size="13" text-anchor="middle">Time (months 0 → 18)</text>
+  <text x="30" y="230" fill="#94a3b8" font-size="13" text-anchor="middle" transform="rotate(-90 30 230)">Confidence in own opinions</text>
+
+  <!-- X tick marks -->
+  <g fill="#64748b" font-size="11" text-anchor="middle">
+    <text x="80" y="418">0</text>
+    <text x="213" y="418">3</text>
+    <text x="347" y="418">6</text>
+    <text x="480" y="418">9</text>
+    <text x="613" y="418">12</text>
+    <text x="747" y="418">15</text>
+    <text x="880" y="418">18</text>
+  </g>
+
+  <!-- Y tick marks -->
+  <g fill="#64748b" font-size="11" text-anchor="end">
+    <text x="72" y="404">low</text>
+    <text x="72" y="234">mid</text>
+    <text x="72" y="68">high</text>
+  </g>
+
+  <!-- "What I thought I was learning" — smooth ascending curve (orange) -->
+  <path d="M80 360 C 200 320, 320 270, 480 200 S 760 110, 880 80 L 880 400 L 80 400 Z" fill="url(#orange-fill)"/>
+  <path d="M80 360 C 200 320, 320 270, 480 200 S 760 110, 880 80" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 4"/>
+
+  <!-- "What I was actually learning" — lumpy curve (lime) -->
+  <path d="M80 370
+           L 130 340
+           L 170 360
+           L 213 300
+           L 250 330
+           L 290 290
+           L 347 320
+           L 390 250
+           L 430 280
+           L 480 220
+           L 520 260
+           L 560 200
+           L 613 230
+           L 660 160
+           L 700 190
+           L 747 130
+           L 800 110
+           L 840 90
+           L 880 60
+           L 880 400 L 80 400 Z" fill="url(#lime-fill)"/>
+  <path d="M80 370
+           L 130 340
+           L 170 360
+           L 213 300
+           L 250 330
+           L 290 290
+           L 347 320
+           L 390 250
+           L 430 280
+           L 480 220
+           L 520 260
+           L 560 200
+           L 613 230
+           L 660 160
+           L 700 190
+           L 747 130
+           L 800 110
+           L 840 90
+           L 880 60" fill="none" stroke="#bef264" stroke-width="2.8" stroke-linejoin="round"/>
+
+  <!-- Annotation: dip 1 (SmartPay first incident) -->
+  <circle cx="170" cy="360" r="4" fill="#bef264"/>
+  <line x1="170" y1="360" x2="200" y2="395" stroke="#475569" stroke-width="0.8" stroke-dasharray="2 2"/>
+  <text x="205" y="408" fill="#cbd5e1" font-size="10">first fraud incident</text>
+
+  <!-- Annotation: dip 2 (GMO onboarding) -->
+  <circle cx="347" cy="320" r="4" fill="#bef264"/>
+  <line x1="347" y1="320" x2="347" y2="80" stroke="#475569" stroke-width="0.8" stroke-dasharray="2 2"/>
+  <text x="352" y="76" fill="#cbd5e1" font-size="10">moved to GMO — surface area triples</text>
+
+  <!-- Annotation: dip 3 (OCR retrain humility) -->
+  <circle cx="613" cy="230" r="4" fill="#bef264"/>
+  <line x1="613" y1="230" x2="660" y2="280" stroke="#475569" stroke-width="0.8" stroke-dasharray="2 2"/>
+  <text x="665" y="285" fill="#cbd5e1" font-size="10">"backbone learned wrong instincts"</text>
+
+  <!-- Annotation: late climb (latency week) -->
+  <circle cx="800" cy="110" r="4" fill="#bef264"/>
+  <text x="730" y="100" fill="#cbd5e1" font-size="10">latency &amp; trust</text>
+
+  <!-- Legend -->
+  <g transform="translate(580 40)">
+    <rect x="-10" y="-22" width="300" height="38" fill="#0f172a" stroke="#1e293b" rx="4"/>
+    <line x1="0" y1="-8" x2="22" y2="-8" stroke="#f97316" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text x="28" y="-4" fill="#cbd5e1" font-size="11">what I thought I was learning</text>
+    <line x1="0" y1="10" x2="22" y2="10" stroke="#bef264" stroke-width="2.8"/>
+    <text x="28" y="14" fill="#cbd5e1" font-size="11">what I was actually learning</text>
+  </g>
+
+  <!-- Title -->
+  <text x="80" y="35" fill="#e2e8f0" font-size="16" font-weight="600">skill arc, 18 months</text>
+  <text x="80" y="52" fill="#64748b" font-size="11">the honest curve is the lumpy one — every dip taught more than the slope between them</text>
+</svg>

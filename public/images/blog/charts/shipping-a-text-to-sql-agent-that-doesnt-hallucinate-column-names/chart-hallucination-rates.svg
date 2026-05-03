@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-label="Bar chart of hallucination rates across agent configurations">
+  <defs>
+    <style>
+      .bg { fill: #0b0f17; }
+      .label { font-family: 'JetBrains Mono', ui-monospace, monospace; fill: #e5e7eb; font-size: 12px; }
+      .sub { font-family: 'JetBrains Mono', monospace; fill: #94a3b8; font-size: 11px; }
+      .title { font-family: 'JetBrains Mono', monospace; fill: #cbd5e1; font-size: 14px; letter-spacing: 0.04em; }
+      .grid { stroke: #1f2937; stroke-width: 1; }
+      .axis { stroke: #475569; stroke-width: 1.2; }
+      .bar-col { fill: #bef264; }
+      .bar-join { fill: #60a5fa; }
+      .value { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: #cbd5e1; }
+    </style>
+  </defs>
+  <rect class="bg" width="960" height="480" />
+
+  <text x="32" y="36" class="title">hallucination rate by agent configuration · illustrative</text>
+  <text x="32" y="54" class="sub">internal eval, stock-analysis questions; lower is better. wrong-column vs wrong-join, separated.</text>
+
+  <!-- Plot area: x [80, 900], y [90, 360] -->
+  <g>
+    <!-- Y axis -->
+    <line class="axis" x1="80" y1="90" x2="80" y2="360" />
+    <line class="axis" x1="80" y1="360" x2="900" y2="360" />
+
+    <!-- gridlines + y labels (0,10,20,30,40%) -->
+    <g>
+      <line class="grid" x1="80" y1="360" x2="900" y2="360" />
+      <text x="68" y="364" class="sub" text-anchor="end">0%</text>
+
+      <line class="grid" x1="80" y1="293" x2="900" y2="293" />
+      <text x="68" y="297" class="sub" text-anchor="end">10%</text>
+
+      <line class="grid" x1="80" y1="225" x2="900" y2="225" />
+      <text x="68" y="229" class="sub" text-anchor="end">20%</text>
+
+      <line class="grid" x1="80" y1="158" x2="900" y2="158" />
+      <text x="68" y="162" class="sub" text-anchor="end">30%</text>
+
+      <line class="grid" x1="80" y1="90" x2="900" y2="90" />
+      <text x="68" y="94" class="sub" text-anchor="end">40%</text>
+    </g>
+
+    <!-- Bars: 5 configurations × 2 bars each. Group width 140; bar width 36; gap 8. -->
+    <!-- Scale: 1% = 6.75 px; we round visual heights. Heights below in px. -->
+
+    <!-- Config A: base LLM  (col 38%, join 31%) -->
+    <g transform="translate(120,0)">
+      <rect class="bar-col"  x="0"  y="103" width="36" height="257" />
+      <rect class="bar-join" x="44" y="151" width="36" height="209" />
+      <text x="-4"  y="98"  class="value">38%</text>
+      <text x="40"  y="146" class="value">31%</text>
+      <text x="40"  y="380" class="label" text-anchor="middle">A. base LLM</text>
+      <text x="40"  y="396" class="sub"   text-anchor="middle">no schema, prompt-only</text>
+    </g>
+
+    <!-- Config B: +schema in prompt (col 24%, join 22%) -->
+    <g transform="translate(270,0)">
+      <rect class="bar-col"  x="0"  y="198" width="36" height="162" />
+      <rect class="bar-join" x="44" y="211" width="36" height="149" />
+      <text x="-4"  y="193" class="value">24%</text>
+      <text x="40"  y="206" class="value">22%</text>
+      <text x="40"  y="380" class="label" text-anchor="middle">B. +schema in prompt</text>
+      <text x="40"  y="396" class="sub"   text-anchor="middle">full DDL stuffed</text>
+    </g>
+
+    <!-- Config C: +retrieved schema (col 15%, join 16%) -->
+    <g transform="translate(420,0)">
+      <rect class="bar-col"  x="0"  y="259" width="36" height="101" />
+      <rect class="bar-join" x="44" y="252" width="36" height="108" />
+      <text x="-4"  y="254" class="value">15%</text>
+      <text x="40"  y="247" class="value">16%</text>
+      <text x="40"  y="380" class="label" text-anchor="middle">C. +retrieved schema</text>
+      <text x="40"  y="396" class="sub"   text-anchor="middle">embed-narrowed tables</text>
+    </g>
+
+    <!-- Config D: +self-correction (col 9%, join 11%) -->
+    <g transform="translate(570,0)">
+      <rect class="bar-col"  x="0"  y="299" width="36" height="61" />
+      <rect class="bar-join" x="44" y="286" width="36" height="74" />
+      <text x="-4"  y="294" class="value">9%</text>
+      <text x="40"  y="281" class="value">11%</text>
+      <text x="40"  y="380" class="label" text-anchor="middle">D. +self-correction</text>
+      <text x="40"  y="396" class="sub"   text-anchor="middle">DIN-SQL-style revise</text>
+    </g>
+
+    <!-- Config E: +abstain (col 4%, join 5%) -->
+    <g transform="translate(720,0)">
+      <rect class="bar-col"  x="0"  y="333" width="36" height="27" />
+      <rect class="bar-join" x="44" y="326" width="36" height="34" />
+      <text x="-4"  y="328" class="value">4%</text>
+      <text x="40"  y="321" class="value">5%</text>
+      <text x="40"  y="380" class="label" text-anchor="middle">E. +abstain</text>
+      <text x="40"  y="396" class="sub"   text-anchor="middle">refuse low-confidence</text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(640,420)">
+    <rect class="bar-col"  x="0"  y="0"  width="14" height="14" />
+    <text x="20" y="12" class="label">wrong column</text>
+    <rect class="bar-join" x="140" y="0" width="14" height="14" />
+    <text x="160" y="12" class="label">wrong join</text>
+  </g>
+
+  <text x="32" y="442" class="sub">y-axis = % of generated queries with that error class on a held-out set of 200 analyst questions.</text>
+  <text x="32" y="458" class="sub">numbers are illustrative — not a benchmark; meant to show the shape of the trade-off, not the exact level.</text>
+</svg>

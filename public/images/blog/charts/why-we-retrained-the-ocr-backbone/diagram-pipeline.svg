@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace">
+  <title id="title">Training pipeline: data sources → mining → augmentation → backbone retrain → eval loop → production</title>
+  <desc id="desc">Block diagram showing the new OCR training pipeline with an explicit feedback loop from production back into hard-example mining.</desc>
+
+  <!-- Background -->
+  <rect width="960" height="480" fill="#0e0e10"/>
+
+  <!-- Title -->
+  <g fill="#fafafa">
+    <text x="40" y="40" font-size="18" font-weight="700">pipeline as it actually lived</text>
+    <text x="40" y="60" font-size="11" fill="#a1a1aa">eval is a loop, not a ceremony — production failures re-enter the mining stage</text>
+  </g>
+
+  <!-- Marker for arrows -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#52525b"/>
+    </marker>
+    <marker id="arrowLime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#bef264"/>
+    </marker>
+  </defs>
+
+  <!-- Top row: data sources -->
+  <g font-size="11" fill="#d4d4d8" text-anchor="middle">
+    <!-- box style: stroke #3f3f46 fill #18181b -->
+    <g>
+      <rect x="40" y="100" width="180" height="56" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="130" y="124" font-weight="700" fill="#fafafa">data sources</text>
+      <text x="130" y="142" fill="#a1a1aa" font-size="10">curated · synthetic · field</text>
+    </g>
+
+    <g>
+      <rect x="260" y="100" width="180" height="56" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="350" y="124" font-weight="700" fill="#fafafa">hard-example mining</text>
+      <text x="350" y="142" fill="#a1a1aa" font-size="10">flagged pages · low-confidence</text>
+    </g>
+
+    <g>
+      <rect x="480" y="100" width="180" height="56" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="570" y="124" font-weight="700" fill="#fafafa">augmentation</text>
+      <text x="570" y="142" fill="#a1a1aa" font-size="10">fold · blur · jpeg · stain</text>
+    </g>
+
+    <g>
+      <rect x="700" y="100" width="220" height="56" rx="6" fill="#18181b" stroke="#bef264"/>
+      <text x="810" y="124" font-weight="700" fill="#bef264">backbone retrain</text>
+      <text x="810" y="142" fill="#d9f99d" font-size="10">representation, not weights-only</text>
+    </g>
+  </g>
+
+  <!-- Top row arrows -->
+  <g stroke="#52525b" stroke-width="1.6" fill="none">
+    <line x1="220" y1="128" x2="258" y2="128" marker-end="url(#arrow)"/>
+    <line x1="440" y1="128" x2="478" y2="128" marker-end="url(#arrow)"/>
+    <line x1="660" y1="128" x2="698" y2="128" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Middle row: eval loop -->
+  <g font-size="11" fill="#d4d4d8" text-anchor="middle">
+    <g>
+      <rect x="700" y="220" width="220" height="68" rx="6" fill="#18181b" stroke="#bef264"/>
+      <text x="810" y="246" font-weight="700" fill="#bef264">eval-as-living-argument</text>
+      <text x="810" y="264" fill="#d9f99d" font-size="10">slice metrics by quartile,</text>
+      <text x="810" y="278" fill="#d9f99d" font-size="10">script, layout, lighting</text>
+    </g>
+
+    <g>
+      <rect x="480" y="220" width="180" height="68" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="570" y="246" font-weight="700" fill="#fafafa">model card + diff</text>
+      <text x="570" y="264" fill="#a1a1aa" font-size="10">where it improved,</text>
+      <text x="570" y="278" fill="#a1a1aa" font-size="10">where it regressed</text>
+    </g>
+
+    <g>
+      <rect x="260" y="220" width="180" height="68" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="350" y="246" font-weight="700" fill="#fafafa">canary in production</text>
+      <text x="350" y="264" fill="#a1a1aa" font-size="10">5% traffic shadow,</text>
+      <text x="350" y="278" fill="#a1a1aa" font-size="10">side-by-side compare</text>
+    </g>
+
+    <g>
+      <rect x="40" y="220" width="180" height="68" rx="6" fill="#18181b" stroke="#3f3f46"/>
+      <text x="130" y="246" font-weight="700" fill="#fafafa">production traffic</text>
+      <text x="130" y="264" fill="#a1a1aa" font-size="10">tired, crooked,</text>
+      <text x="130" y="278" fill="#a1a1aa" font-size="10">inconveniently human</text>
+    </g>
+  </g>
+
+  <!-- Vertical: backbone retrain -> eval -->
+  <g stroke="#bef264" stroke-width="1.6" fill="none">
+    <line x1="810" y1="156" x2="810" y2="218" marker-end="url(#arrowLime)"/>
+  </g>
+
+  <!-- Eval -> model card -> canary -> production (right to left) -->
+  <g stroke="#52525b" stroke-width="1.6" fill="none">
+    <line x1="700" y1="254" x2="662" y2="254" marker-end="url(#arrow)"/>
+    <line x1="480" y1="254" x2="442" y2="254" marker-end="url(#arrow)"/>
+    <line x1="260" y1="254" x2="222" y2="254" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Loop back: production -> mining (lime, the "eval is a loop" claim) -->
+  <g stroke="#bef264" stroke-width="1.8" fill="none">
+    <!-- down from production -->
+    <path d="M 130 290 L 130 350 L 350 350 L 350 290" marker-end="url(#arrowLime)"/>
+  </g>
+
+  <!-- Loop label -->
+  <g font-size="11" fill="#bef264" text-anchor="middle">
+    <text x="240" y="344" font-weight="700">failures re-enter mining</text>
+    <text x="240" y="358" fill="#a3e635" font-size="10">CACE: changing anything changes everything (Sculley et al. 2015)</text>
+  </g>
+
+  <!-- Bottom: production label -->
+  <g font-size="10" fill="#52525b">
+    <text x="40" y="430">flow → · feedback → (lime)</text>
+    <text x="40" y="446">no step is a single ceremony; every box keeps re-running on the new data shape.</text>
+  </g>
+
+  <!-- Decorative tick marks (grid feel) -->
+  <g stroke="#1f1f23" stroke-width="1">
+    <line x1="40"  y1="392" x2="920" y2="392"/>
+  </g>
+</svg>

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-label="Flow diagram of the schema-aware Text-to-SQL agent loop">
+  <defs>
+    <style>
+      .bg { fill: #0b0f17; }
+      .label { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; fill: #e5e7eb; font-size: 13px; }
+      .sub { font-family: 'JetBrains Mono', ui-monospace, monospace; fill: #94a3b8; font-size: 11px; }
+      .title { font-family: 'JetBrains Mono', monospace; fill: #cbd5e1; font-size: 14px; letter-spacing: 0.04em; }
+      .box { fill: #111827; stroke: #1f2937; stroke-width: 1.5; }
+      .box-accent { fill: #111827; stroke: #bef264; stroke-width: 1.5; }
+      .box-blue { fill: #111827; stroke: #60a5fa; stroke-width: 1.5; }
+      .abstain { fill: #111827; stroke: #f87171; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .arrow { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+      .arrow-back { stroke: #bef264; stroke-width: 1.5; fill: none; stroke-dasharray: 5 3; }
+      .arrow-abstain { stroke: #f87171; stroke-width: 1.5; fill: none; }
+      .accent { fill: #bef264; }
+      .blue { fill: #60a5fa; }
+      .red { fill: #f87171; }
+    </style>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8" />
+    </marker>
+    <marker id="arrowhead-lime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#bef264" />
+    </marker>
+    <marker id="arrowhead-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f87171" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="960" height="480" />
+
+  <text x="32" y="36" class="title">agent.loop()  // schema-aware text-to-sql</text>
+  <line x1="32" y1="46" x2="320" y2="46" stroke="#1f2937" stroke-width="1" />
+
+  <!-- Question -->
+  <g transform="translate(32,90)">
+    <rect class="box-blue" width="150" height="62" rx="8" />
+    <text x="75" y="28" class="label" text-anchor="middle">user question</text>
+    <text x="75" y="46" class="sub" text-anchor="middle">"avg PE last quarter?"</text>
+  </g>
+
+  <!-- Schema retriever -->
+  <g transform="translate(220,90)">
+    <rect class="box-accent" width="170" height="62" rx="8" />
+    <text x="85" y="26" class="label" text-anchor="middle">schema retriever</text>
+    <text x="85" y="44" class="sub" text-anchor="middle">embed + business hints</text>
+  </g>
+
+  <!-- Candidate SQL -->
+  <g transform="translate(428,90)">
+    <rect class="box" width="170" height="62" rx="8" />
+    <text x="85" y="26" class="label" text-anchor="middle">candidate SQL</text>
+    <text x="85" y="44" class="sub" text-anchor="middle">few-shot + style guide</text>
+  </g>
+
+  <!-- Self-correction -->
+  <g transform="translate(636,90)">
+    <rect class="box-accent" width="180" height="62" rx="8" />
+    <text x="90" y="26" class="label" text-anchor="middle">self-correction</text>
+    <text x="90" y="44" class="sub" text-anchor="middle">cross-check vs schema</text>
+  </g>
+
+  <!-- Executor -->
+  <g transform="translate(428,220)">
+    <rect class="box-blue" width="170" height="62" rx="8" />
+    <text x="85" y="26" class="label" text-anchor="middle">executor</text>
+    <text x="85" y="44" class="sub" text-anchor="middle">PostgreSQL · dry-run</text>
+  </g>
+
+  <!-- Verifier -->
+  <g transform="translate(220,220)">
+    <rect class="box" width="170" height="62" rx="8" />
+    <text x="85" y="26" class="label" text-anchor="middle">verifier</text>
+    <text x="85" y="44" class="sub" text-anchor="middle">row-shape + types</text>
+  </g>
+
+  <!-- Answer -->
+  <g transform="translate(32,220)">
+    <rect class="box-accent" width="150" height="62" rx="8" />
+    <text x="75" y="26" class="label" text-anchor="middle">answer</text>
+    <text x="75" y="44" class="sub" text-anchor="middle">+ provenance trace</text>
+  </g>
+
+  <!-- Abstain -->
+  <g transform="translate(636,220)">
+    <rect class="abstain" width="180" height="62" rx="8" />
+    <text x="90" y="26" class="label" text-anchor="middle" fill="#fecaca">abstain</text>
+    <text x="90" y="44" class="sub" text-anchor="middle" fill="#fca5a5">"i'm not sure"</text>
+  </g>
+
+  <!-- Arrows: question -> retriever -->
+  <path class="arrow" d="M182 121 L218 121" marker-end="url(#arrowhead)" />
+  <!-- retriever -> candidate SQL -->
+  <path class="arrow" d="M390 121 L426 121" marker-end="url(#arrowhead)" />
+  <!-- candidate SQL -> self-correction -->
+  <path class="arrow" d="M598 121 L634 121" marker-end="url(#arrowhead)" />
+
+  <!-- self-correction -> executor (down/left) -->
+  <path class="arrow" d="M726 152 L726 190 L513 190 L513 218" marker-end="url(#arrowhead)" />
+  <text x="600" y="183" class="sub">if confident</text>
+
+  <!-- self-correction loop back to candidate SQL (revise) -->
+  <path class="arrow-back" d="M726 90 L726 70 L513 70 L513 88" marker-end="url(#arrowhead-lime)" />
+  <text x="540" y="62" class="sub" fill="#bef264">revise · reflexion-style</text>
+
+  <!-- self-correction -> abstain (when not confident) -->
+  <path class="arrow-abstain" d="M816 121 L848 121 L848 200 L726 200 L726 218" marker-end="url(#arrowhead-red)" />
+  <text x="828" y="170" class="sub" fill="#fca5a5" transform="rotate(90 828 170)">low confidence</text>
+
+  <!-- executor -> verifier -->
+  <path class="arrow" d="M428 251 L392 251" marker-end="url(#arrowhead)" />
+  <!-- verifier -> answer -->
+  <path class="arrow" d="M220 251 L184 251" marker-end="url(#arrowhead)" />
+  <!-- verifier -> back to candidate SQL on schema mismatch -->
+  <path class="arrow-back" d="M305 220 L305 175 L513 175 L513 152" marker-end="url(#arrowhead-lime)" />
+  <text x="320" y="170" class="sub" fill="#bef264">schema mismatch</text>
+
+  <!-- Legend -->
+  <g transform="translate(32,360)">
+    <text class="title" x="0" y="0">legend</text>
+    <line x1="0" y1="20" x2="40" y2="20" stroke="#94a3b8" stroke-width="1.5" />
+    <text x="48" y="24" class="sub">forward step</text>
+    <line x1="180" y1="20" x2="220" y2="20" stroke="#bef264" stroke-width="1.5" stroke-dasharray="5 3" />
+    <text x="228" y="24" class="sub">self-correction loop</text>
+    <line x1="400" y1="20" x2="440" y2="20" stroke="#f87171" stroke-width="1.5" />
+    <text x="448" y="24" class="sub">abstain path</text>
+  </g>
+
+  <text x="32" y="450" class="sub">flow inspired by ReAct (Yao et al. 2023) and Reflexion (Shinn et al. 2024); abstention is the most reassuring exit.</text>
+</svg>

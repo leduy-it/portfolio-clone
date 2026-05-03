@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" shape-rendering="crispEdges">
+  <defs>
+    <linearGradient id="city-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a1219"/>
+      <stop offset="0.6" stop-color="#0f1c28"/>
+      <stop offset="1" stop-color="#0a1219"/>
+    </linearGradient>
+    <linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff9933" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ff9933" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#66fcf1" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#66fcf1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#city-bg)"/>
+
+  <!-- Saigon side (left, amber) -->
+  <rect x="0" y="0" width="600" height="675" fill="url(#dawn)"/>
+  <!-- Saigon sun -->
+  <circle cx="180" cy="180" r="60" fill="#ff9933" opacity="0.85"/>
+  <circle cx="180" cy="180" r="80" fill="#ff9933" opacity="0.18"/>
+
+  <!-- Saigon skyline -->
+  <g fill="#ff9933" opacity="0.78">
+    <rect x="40" y="450" width="40" height="180"/>
+    <rect x="90" y="420" width="50" height="210"/>
+    <rect x="150" y="380" width="30" height="250"/>
+    <rect x="190" y="430" width="60" height="200"/>
+    <rect x="260" y="350" width="40" height="280"/>
+    <rect x="310" y="400" width="48" height="230"/>
+    <rect x="370" y="320" width="28" height="310"/>
+    <rect x="408" y="290" width="44" height="340"/>
+    <rect x="460" y="430" width="55" height="200"/>
+    <rect x="525" y="380" width="38" height="250"/>
+  </g>
+  <!-- Bitexco-like spire -->
+  <g fill="#ff9933">
+    <rect x="420" y="240" width="20" height="50"/>
+    <rect x="427" y="220" width="6" height="20"/>
+    <rect x="424" y="210" width="12" height="4"/>
+  </g>
+  <!-- Saigon windows -->
+  <g fill="#0a1219">
+    <rect x="50" y="470" width="6" height="6"/><rect x="62" y="470" width="6" height="6"/>
+    <rect x="50" y="490" width="6" height="6"/><rect x="62" y="500" width="6" height="6"/>
+    <rect x="105" y="450" width="6" height="6"/><rect x="120" y="460" width="6" height="6"/>
+    <rect x="270" y="380" width="6" height="6"/><rect x="282" y="400" width="6" height="6"/>
+    <rect x="378" y="350" width="6" height="6"/><rect x="378" y="400" width="6" height="6"/>
+    <rect x="418" y="330" width="6" height="6"/><rect x="430" y="380" width="6" height="6"/>
+  </g>
+
+  <!-- Tokyo side (right, cyan) -->
+  <rect x="600" y="0" width="600" height="675" fill="url(#night)"/>
+  <!-- Tokyo moon -->
+  <circle cx="980" cy="160" r="46" fill="#66fcf1" opacity="0.9"/>
+  <circle cx="965" cy="148" r="14" fill="#0f1c28"/>
+
+  <!-- Tokyo skyline -->
+  <g fill="#66fcf1" opacity="0.78">
+    <rect x="640" y="380" width="48" height="250"/>
+    <rect x="700" y="420" width="36" height="210"/>
+    <rect x="745" y="350" width="50" height="280"/>
+    <rect x="800" y="400" width="28" height="230"/>
+    <rect x="835" y="300" width="44" height="330"/>
+    <rect x="888" y="370" width="38" height="260"/>
+    <rect x="935" y="330" width="55" height="300"/>
+    <rect x="998" y="280" width="32" height="350"/>
+    <rect x="1038" y="380" width="46" height="250"/>
+    <rect x="1090" y="350" width="40" height="280"/>
+    <rect x="1138" y="420" width="36" height="210"/>
+  </g>
+  <!-- Tokyo Tower-like pyramid -->
+  <g fill="#66fcf1" opacity="0.85">
+    <polygon points="1010,200 1018,280 1002,280"/>
+    <rect x="1007" y="180" width="6" height="20"/>
+  </g>
+  <!-- Tokyo windows -->
+  <g fill="#0a1219">
+    <rect x="650" y="400" width="6" height="6"/><rect x="660" y="420" width="6" height="6"/>
+    <rect x="850" y="320" width="6" height="6"/><rect x="868" y="340" width="6" height="6"/>
+    <rect x="850" y="360" width="6" height="6"/><rect x="868" y="380" width="6" height="6"/>
+    <rect x="945" y="350" width="6" height="6"/><rect x="960" y="370" width="6" height="6"/>
+    <rect x="1005" y="300" width="6" height="6"/><rect x="1015" y="320" width="6" height="6"/>
+  </g>
+
+  <!-- Dotted path connecting Saigon → Tokyo -->
+  <g stroke="#c4ccd6" stroke-width="3" stroke-dasharray="6 10" fill="none" opacity="0.5">
+    <path d="M280 250 Q 600 80 940 240"/>
+  </g>
+  <!-- Plane/dot midway -->
+  <circle cx="600" cy="125" r="6" fill="#ff9933"/>
+
+  <!-- Labels -->
+  <g font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">
+    <text x="60" y="640" fill="#ff9933">SAIGON · 2024</text>
+    <text x="980" y="640" fill="#66fcf1">TOKYO · 2026</text>
+  </g>
+</svg>

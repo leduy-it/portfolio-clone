@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-label="Schema-linking diagram showing disambiguation of two adjacent columns">
+  <defs>
+    <style>
+      .bg { fill: #0b0f17; }
+      .label { font-family: 'JetBrains Mono', ui-monospace, monospace; fill: #e5e7eb; font-size: 13px; }
+      .sub { font-family: 'JetBrains Mono', monospace; fill: #94a3b8; font-size: 11px; }
+      .mono { font-family: 'JetBrains Mono', monospace; fill: #e5e7eb; font-size: 12px; }
+      .title { font-family: 'JetBrains Mono', monospace; fill: #cbd5e1; font-size: 14px; letter-spacing: 0.04em; }
+      .box { fill: #111827; stroke: #1f2937; stroke-width: 1.5; }
+      .col-pick { fill: #0f1a13; stroke: #bef264; stroke-width: 1.6; }
+      .col-rej  { fill: #1a1010; stroke: #f87171; stroke-width: 1.4; stroke-dasharray: 5 3; }
+      .table { fill: #0f172a; stroke: #334155; stroke-width: 1.2; }
+      .header { fill: #1e293b; stroke: #334155; stroke-width: 1.2; }
+      .arrow { stroke: #94a3b8; stroke-width: 1.4; fill: none; }
+      .arrow-pick { stroke: #bef264; stroke-width: 1.6; fill: none; }
+      .arrow-rej  { stroke: #f87171; stroke-width: 1.4; fill: none; stroke-dasharray: 4 3; }
+      .accent { fill: #bef264; }
+      .blue { fill: #60a5fa; }
+      .pill { fill: #111827; stroke: #60a5fa; stroke-width: 1.2; }
+    </style>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8" />
+    </marker>
+    <marker id="ah-lime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#bef264" />
+    </marker>
+    <marker id="ah-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f87171" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="960" height="480" />
+
+  <text x="32" y="36" class="title">schema linking · disambiguating two semantically adjacent columns</text>
+  <line x1="32" y1="46" x2="420" y2="46" stroke="#1f2937" stroke-width="1" />
+
+  <!-- Question card -->
+  <g transform="translate(32,80)">
+    <rect class="box" width="280" height="92" rx="10" />
+    <text x="16" y="26" class="sub">user question</text>
+    <text x="16" y="50" class="label">"what was the closing price</text>
+    <text x="16" y="68" class="label"> of VNM yesterday?"</text>
+    <text x="16" y="84" class="sub">→ tokenize · embed · extract entities</text>
+  </g>
+
+  <!-- Token pills -->
+  <g transform="translate(32,200)">
+    <rect class="pill" x="0"   y="0" width="92"  height="26" rx="13" />
+    <text x="46"  y="18" class="mono" text-anchor="middle" fill="#60a5fa">closing price</text>
+
+    <rect class="pill" x="104" y="0" width="60"  height="26" rx="13" />
+    <text x="134" y="18" class="mono" text-anchor="middle" fill="#60a5fa">VNM</text>
+
+    <rect class="pill" x="176" y="0" width="92"  height="26" rx="13" />
+    <text x="222" y="18" class="mono" text-anchor="middle" fill="#60a5fa">yesterday</text>
+  </g>
+
+  <!-- Linker box -->
+  <g transform="translate(360,90)">
+    <rect class="box" width="220" height="120" rx="10" />
+    <text x="110" y="28" class="label" text-anchor="middle">schema linker</text>
+    <text x="110" y="50" class="sub"   text-anchor="middle">embedding similarity</text>
+    <text x="110" y="68" class="sub"   text-anchor="middle">+ business-meaning hints</text>
+    <text x="110" y="86" class="sub"   text-anchor="middle">+ FK graph walk</text>
+    <text x="110" y="106" class="sub"  text-anchor="middle">candidates: 2 columns share token "price"</text>
+  </g>
+
+  <!-- arrows from question + tokens to linker -->
+  <path class="arrow" d="M312 130 L358 130" marker-end="url(#ah)" />
+  <path class="arrow" d="M260 213 L340 213 L358 175" marker-end="url(#ah)" />
+
+  <!-- Candidate column A (correct) -->
+  <g transform="translate(620,80)">
+    <rect class="table" width="300" height="160" rx="10" />
+    <rect class="header" x="0" y="0" width="300" height="28" rx="10" />
+    <text x="16" y="20" class="mono" fill="#cbd5e1">table  daily_quote</text>
+
+    <rect class="col-pick" x="12" y="40" width="276" height="38" rx="6" />
+    <text x="22" y="56" class="mono">close_price  numeric(18,4)</text>
+    <text x="22" y="72" class="sub">end-of-session official price (HOSE)</text>
+
+    <rect x="12" y="86" width="276" height="28" rx="6" fill="#0f172a" stroke="#334155" />
+    <text x="22" y="104" class="mono" fill="#94a3b8">trade_date  date</text>
+
+    <rect x="12" y="122" width="276" height="28" rx="6" fill="#0f172a" stroke="#334155" />
+    <text x="22" y="140" class="mono" fill="#94a3b8">ticker  varchar(8)</text>
+  </g>
+
+  <!-- Candidate column B (rejected) -->
+  <g transform="translate(620,270)">
+    <rect class="table" width="300" height="160" rx="10" />
+    <rect class="header" x="0" y="0" width="300" height="28" rx="10" />
+    <text x="16" y="20" class="mono" fill="#cbd5e1">table  intraday_tick</text>
+
+    <rect class="col-rej" x="12" y="40" width="276" height="38" rx="6" />
+    <text x="22" y="56" class="mono" fill="#fecaca">last_price  numeric(18,4)</text>
+    <text x="22" y="72" class="sub" fill="#fca5a5">most recent tick (still updating)</text>
+
+    <rect x="12" y="86" width="276" height="28" rx="6" fill="#0f172a" stroke="#334155" />
+    <text x="22" y="104" class="mono" fill="#94a3b8">tick_ts  timestamptz</text>
+
+    <rect x="12" y="122" width="276" height="28" rx="6" fill="#0f172a" stroke="#334155" />
+    <text x="22" y="140" class="mono" fill="#94a3b8">ticker  varchar(8)</text>
+  </g>
+
+  <!-- Arrows from linker to candidates -->
+  <path class="arrow-pick" d="M580 140 L612 120" marker-end="url(#ah-lime)" />
+  <text x="580" y="108" class="sub" fill="#bef264">picked · "closing" → close_price</text>
+
+  <path class="arrow-rej" d="M580 180 L612 320" marker-end="url(#ah-red)" />
+  <text x="566" y="270" class="sub" fill="#fca5a5" transform="rotate(-70 566 270)">rejected · last ≠ close</text>
+
+  <!-- Decision summary -->
+  <g transform="translate(32,310)">
+    <rect class="box" width="280" height="120" rx="10" />
+    <text x="16" y="26" class="sub">resolved binding</text>
+    <text x="16" y="48" class="mono" fill="#bef264">closing price → daily_quote.close_price</text>
+    <text x="16" y="66" class="mono" fill="#bef264">VNM           → ticker = 'VNM'</text>
+    <text x="16" y="84" class="mono" fill="#bef264">yesterday     → trade_date = current_date - 1</text>
+    <text x="16" y="106" class="sub">if confidence &lt; τ → ask user or abstain</text>
+  </g>
+
+  <text x="32" y="460" class="sub">two columns can be semantically adjacent and operationally different — schema linking decides which one earns the join.</text>
+</svg>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace">
+  <title id="title">Stylized flame graph — where time was spent in the OCR pipeline before vs after</title>
+  <desc id="desc">Two stacked flame graphs illustrating the same call tree before and after optimization. Before: preprocessing, decoder loop and postprocessing dominate width. After: every layer is narrower and the decoder loop is much tighter. Color coded warm (before) and cool (after).</desc>
+
+  <!-- Background -->
+  <rect width="960" height="480" fill="#0e0e10"/>
+
+  <!-- Heading -->
+  <g fill="#fafafa">
+    <text x="40" y="36" font-size="18" font-weight="700">flame graph — same call tree, two weeks apart</text>
+    <text x="40" y="56" font-size="11" fill="#a1a1aa">stylized; widths proportional to wall-clock time on critical path</text>
+  </g>
+
+  <!-- Legend -->
+  <g font-size="11">
+    <rect x="700" y="24" width="14" height="14" fill="#f97316" fill-opacity="0.78" rx="2"/>
+    <text x="720" y="36" fill="#d4d4d8">before</text>
+    <rect x="788" y="24" width="14" height="14" fill="#60a5fa" fill-opacity="0.78" rx="2"/>
+    <text x="808" y="36" fill="#d4d4d8">after</text>
+  </g>
+
+  <!-- ============= BEFORE flame graph ============= -->
+  <g>
+    <!-- Label -->
+    <text x="40" y="92" font-size="12" font-weight="700" fill="#f97316">BEFORE · total ≈ 100 units</text>
+    <text x="40" y="108" font-size="10" fill="#71717a">x axis: wall-clock proportion · y axis: stack depth (root at top)</text>
+
+    <!-- Frame baseline -->
+    <line x1="40" y1="120" x2="900" y2="120" stroke="#27272a"/>
+
+    <!-- Row 1: handler (root) full width -->
+    <rect x="40" y="124" width="860" height="22" fill="#f97316" fill-opacity="0.32" stroke="#0e0e10" stroke-width="1"/>
+    <text x="50" y="140" font-size="11" fill="#fafafa">api::handle_ocr_request</text>
+
+    <!-- Row 2: io / preprocess / inference / postprocess -->
+    <rect x="40"  y="148" width="60"  height="22" fill="#f97316" fill-opacity="0.42" stroke="#0e0e10"/>
+    <text x="46"  y="164" font-size="10" fill="#fafafa">io::recv</text>
+
+    <rect x="100" y="148" width="220" height="22" fill="#f97316" fill-opacity="0.55" stroke="#0e0e10"/>
+    <text x="108" y="164" font-size="10" fill="#fafafa">preprocess::pipeline (chunky)</text>
+
+    <rect x="320" y="148" width="430" height="22" fill="#f97316" fill-opacity="0.68" stroke="#0e0e10"/>
+    <text x="328" y="164" font-size="10" fill="#fafafa">inference::ocr_model</text>
+
+    <rect x="750" y="148" width="120" height="22" fill="#f97316" fill-opacity="0.5" stroke="#0e0e10"/>
+    <text x="758" y="164" font-size="10" fill="#fafafa">postprocess::reflow</text>
+
+    <rect x="870" y="148" width="30"  height="22" fill="#f97316" fill-opacity="0.4" stroke="#0e0e10"/>
+    <text x="876" y="164" font-size="9" fill="#fafafa">io::send</text>
+
+    <!-- Row 3: children of preprocess + inference + postprocess -->
+    <!-- preprocess children -->
+    <rect x="100" y="172" width="80" height="22" fill="#fb923c" fill-opacity="0.65" stroke="#0e0e10"/>
+    <text x="106" y="188" font-size="9" fill="#0e0e10">resize(over)</text>
+
+    <rect x="180" y="172" width="60" height="22" fill="#fb923c" fill-opacity="0.55" stroke="#0e0e10"/>
+    <text x="186" y="188" font-size="9" fill="#0e0e10">cv::cvtColor</text>
+
+    <rect x="240" y="172" width="80" height="22" fill="#fb923c" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="246" y="188" font-size="9" fill="#0e0e10">to_tensor (CPU)</text>
+
+    <!-- inference children -->
+    <rect x="320" y="172" width="60"  height="22" fill="#fdba74" fill-opacity="0.65" stroke="#0e0e10"/>
+    <text x="326" y="188" font-size="9" fill="#0e0e10">h2d_copy</text>
+
+    <rect x="380" y="172" width="100" height="22" fill="#fdba74" fill-opacity="0.78" stroke="#0e0e10"/>
+    <text x="386" y="188" font-size="9" fill="#0e0e10">backbone::fwd</text>
+
+    <rect x="480" y="172" width="240" height="22" fill="#fdba74" fill-opacity="0.92" stroke="#0e0e10"/>
+    <text x="488" y="188" font-size="10" fill="#0e0e10" font-weight="700">decoder::loop (beam=8, wide)</text>
+
+    <rect x="720" y="172" width="30"  height="22" fill="#fdba74" fill-opacity="0.6" stroke="#0e0e10"/>
+    <text x="724" y="188" font-size="9" fill="#0e0e10">d2h</text>
+
+    <!-- postprocess children -->
+    <rect x="750" y="172" width="70" height="22" fill="#fb923c" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="756" y="188" font-size="9" fill="#0e0e10">alloc·json</text>
+
+    <rect x="820" y="172" width="50" height="22" fill="#fb923c" fill-opacity="0.6" stroke="#0e0e10"/>
+    <text x="826" y="188" font-size="9" fill="#0e0e10">utf8 norm</text>
+
+    <!-- Row 4: leaf hotspots -->
+    <rect x="480" y="196" width="160" height="22" fill="#fef08a" fill-opacity="0.85" stroke="#0e0e10"/>
+    <text x="488" y="212" font-size="10" fill="#0e0e10" font-weight="700">attn::softmax (no flash)</text>
+
+    <rect x="640" y="196" width="80" height="22" fill="#fef08a" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="646" y="212" font-size="9" fill="#0e0e10">beam_rerank</text>
+
+    <rect x="380" y="196" width="100" height="22" fill="#fef08a" fill-opacity="0.6" stroke="#0e0e10"/>
+    <text x="388" y="212" font-size="9" fill="#0e0e10">conv2d (fp32)</text>
+  </g>
+
+  <!-- Annotations on BEFORE -->
+  <g font-size="10" fill="#bef264">
+    <line x1="220" y1="195" x2="220" y2="240" stroke="#bef264" stroke-dasharray="2 3"/>
+    <text x="80" y="252">preprocessing on CPU, pretending the GPU is busy</text>
+
+    <line x1="560" y1="218" x2="560" y2="240" stroke="#bef264" stroke-dasharray="2 3"/>
+    <text x="450" y="252">decoder loop wide — beam=8 for everything</text>
+
+    <line x1="800" y1="195" x2="800" y2="240" stroke="#bef264" stroke-dasharray="2 3"/>
+    <text x="745" y="252">postprocess re-allocs per page</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="40" y1="282" x2="900" y2="282" stroke="#27272a" stroke-dasharray="4 4"/>
+
+  <!-- ============= AFTER flame graph ============= -->
+  <g>
+    <text x="40" y="304" font-size="12" font-weight="700" fill="#60a5fa">AFTER · total ≈ 60 units · same scale</text>
+    <text x="40" y="320" font-size="10" fill="#71717a">decoder uses adaptive beam · TensorRT engine · pre/post fused on GPU</text>
+
+    <line x1="40" y1="332" x2="900" y2="332" stroke="#27272a"/>
+
+    <!-- Row 1: handler -->
+    <rect x="40" y="336" width="516" height="20" fill="#60a5fa" fill-opacity="0.32" stroke="#0e0e10"/>
+    <text x="50" y="350" font-size="11" fill="#fafafa">api::handle_ocr_request</text>
+
+    <!-- Row 2 -->
+    <rect x="40"  y="358" width="40"  height="20" fill="#60a5fa" fill-opacity="0.42" stroke="#0e0e10"/>
+    <text x="46"  y="372" font-size="9" fill="#fafafa">io</text>
+
+    <rect x="80"  y="358" width="100" height="20" fill="#60a5fa" fill-opacity="0.55" stroke="#0e0e10"/>
+    <text x="86"  y="372" font-size="10" fill="#fafafa">preprocess (lean)</text>
+
+    <rect x="180" y="358" width="280" height="20" fill="#60a5fa" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="188" y="372" font-size="10" fill="#fafafa">inference::trt_engine</text>
+
+    <rect x="460" y="358" width="70"  height="20" fill="#60a5fa" fill-opacity="0.5" stroke="#0e0e10"/>
+    <text x="466" y="372" font-size="9" fill="#fafafa">postprocess</text>
+
+    <rect x="530" y="358" width="26"  height="20" fill="#60a5fa" fill-opacity="0.4" stroke="#0e0e10"/>
+    <text x="534" y="372" font-size="9" fill="#fafafa">io</text>
+
+    <!-- Row 3 -->
+    <rect x="80"  y="380" width="100" height="20" fill="#93c5fd" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="86"  y="394" font-size="9" fill="#0e0e10">resize·to_tensor (GPU)</text>
+
+    <rect x="180" y="380" width="60"  height="20" fill="#93c5fd" fill-opacity="0.65" stroke="#0e0e10"/>
+    <text x="186" y="394" font-size="9" fill="#0e0e10">backbone</text>
+
+    <rect x="240" y="380" width="180" height="20" fill="#93c5fd" fill-opacity="0.92" stroke="#0e0e10"/>
+    <text x="248" y="394" font-size="10" fill="#0e0e10" font-weight="700">decoder (beam=1..4 adaptive)</text>
+
+    <rect x="420" y="380" width="40"  height="20" fill="#93c5fd" fill-opacity="0.6" stroke="#0e0e10"/>
+    <text x="424" y="394" font-size="9" fill="#0e0e10">d2h</text>
+
+    <rect x="460" y="380" width="70"  height="20" fill="#93c5fd" fill-opacity="0.65" stroke="#0e0e10"/>
+    <text x="466" y="394" font-size="9" fill="#0e0e10">json (reuse buf)</text>
+
+    <!-- Row 4: leaf -->
+    <rect x="240" y="402" width="120" height="20" fill="#bae6fd" fill-opacity="0.85" stroke="#0e0e10"/>
+    <text x="248" y="416" font-size="9" fill="#0e0e10" font-weight="700">flash_attn::softmax</text>
+
+    <rect x="360" y="402" width="60"  height="20" fill="#bae6fd" fill-opacity="0.7" stroke="#0e0e10"/>
+    <text x="366" y="416" font-size="9" fill="#0e0e10">greedy/short_beam</text>
+  </g>
+
+  <!-- Annotations on AFTER -->
+  <g font-size="10" fill="#bef264">
+    <line x1="300" y1="425" x2="300" y2="445" stroke="#bef264" stroke-dasharray="2 3"/>
+    <text x="220" y="458">adaptive beam · FlashAttention · TRT graph</text>
+  </g>
+
+  <!-- Reference scale tick -->
+  <g font-size="10" fill="#52525b">
+    <line x1="40" y1="468" x2="900" y2="468" stroke="#27272a"/>
+    <text x="40"  y="476">0%</text>
+    <text x="470" y="476" text-anchor="middle">≈ 50% of original critical-path width</text>
+    <text x="900" y="476" text-anchor="end">100% (before)</text>
+  </g>
+</svg>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" role="img" aria-labelledby="title desc" font-family="'JetBrains Mono', ui-monospace, Menlo, monospace">
+  <title id="title">Latency distribution before vs after — the long tail moved more than the median</title>
+  <desc id="desc">Illustrative overlaid histogram of OCR pipeline response times. Orange bars (before) extend deep into the long tail; blue bars (after) compress toward the left. p50, p95 and p99 markers show the median improved a little while p99 improved roughly forty percent.</desc>
+
+  <!-- Background -->
+  <rect width="960" height="480" fill="#0e0e10"/>
+
+  <!-- Frame -->
+  <g stroke="#27272a" stroke-width="1">
+    <line x1="80"  y1="80"  x2="80"  y2="380"/>
+    <line x1="80"  y1="380" x2="900" y2="380"/>
+  </g>
+
+  <!-- Y-axis grid + labels -->
+  <g font-size="10" fill="#52525b">
+    <g stroke="#1f1f23" stroke-dasharray="2 4">
+      <line x1="80" y1="320" x2="900" y2="320"/>
+      <line x1="80" y1="260" x2="900" y2="260"/>
+      <line x1="80" y1="200" x2="900" y2="200"/>
+      <line x1="80" y1="140" x2="900" y2="140"/>
+      <line x1="80" y1="80"  x2="900" y2="80"/>
+    </g>
+    <text x="72" y="384" text-anchor="end">0</text>
+    <text x="72" y="324" text-anchor="end">5%</text>
+    <text x="72" y="264" text-anchor="end">10%</text>
+    <text x="72" y="204" text-anchor="end">15%</text>
+    <text x="72" y="144" text-anchor="end">20%</text>
+    <text x="72" y="84"  text-anchor="end">25%</text>
+    <text x="40" y="232" text-anchor="middle" transform="rotate(-90 40 232)" fill="#71717a">share of requests</text>
+  </g>
+
+  <!-- Heading -->
+  <g fill="#fafafa">
+    <text x="80" y="40" font-size="18" font-weight="700">latency distribution — before vs after</text>
+    <text x="80" y="60" font-size="11" fill="#a1a1aa">illustrative — internal traces, OCR pipeline, mixed document classes (n ≈ 18k requests)</text>
+  </g>
+
+  <!-- Legend -->
+  <g font-size="11">
+    <rect x="700" y="28" width="14" height="14" fill="#f97316" fill-opacity="0.78" rx="2"/>
+    <text x="720" y="40" fill="#d4d4d8">before</text>
+    <rect x="788" y="28" width="14" height="14" fill="#60a5fa" fill-opacity="0.78" rx="2"/>
+    <text x="808" y="40" fill="#d4d4d8">after</text>
+  </g>
+
+  <!--
+    X axis: 26 bins, 0.0s -> 6.5s in 0.25s steps
+    Bar slot width = 30px, gap 2px, x0 = 90
+    bin index i -> x = 90 + i*30
+    Heights mapped: 1 unit = 12px, max ~25 units (300px = 25%)
+    BEFORE: shifted right, fat tail
+    AFTER:  shifted left, compressed tail
+  -->
+
+  <!-- BEFORE bars (orange) -->
+  <g fill="#f97316" fill-opacity="0.55">
+    <rect x="90"  y="368" width="28" height="12"/>
+    <rect x="120" y="332" width="28" height="48"/>
+    <rect x="150" y="284" width="28" height="96"/>
+    <rect x="180" y="236" width="28" height="144"/>
+    <rect x="210" y="200" width="28" height="180"/>
+    <rect x="240" y="176" width="28" height="204"/>
+    <rect x="270" y="164" width="28" height="216"/>
+    <rect x="300" y="152" width="28" height="228"/>
+    <rect x="330" y="164" width="28" height="216"/>
+    <rect x="360" y="188" width="28" height="192"/>
+    <rect x="390" y="212" width="28" height="168"/>
+    <rect x="420" y="236" width="28" height="144"/>
+    <rect x="450" y="260" width="28" height="120"/>
+    <rect x="480" y="284" width="28" height="96"/>
+    <rect x="510" y="296" width="28" height="84"/>
+    <rect x="540" y="308" width="28" height="72"/>
+    <rect x="570" y="320" width="28" height="60"/>
+    <rect x="600" y="332" width="28" height="48"/>
+    <rect x="630" y="338" width="28" height="42"/>
+    <rect x="660" y="344" width="28" height="36"/>
+    <rect x="690" y="350" width="28" height="30"/>
+    <rect x="720" y="354" width="28" height="26"/>
+    <rect x="750" y="358" width="28" height="22"/>
+    <rect x="780" y="362" width="28" height="18"/>
+    <rect x="810" y="366" width="28" height="14"/>
+    <rect x="840" y="370" width="28" height="10"/>
+  </g>
+
+  <!-- AFTER bars (blue) -->
+  <g fill="#60a5fa" fill-opacity="0.62">
+    <rect x="90"  y="332" width="28" height="48"/>
+    <rect x="120" y="260" width="28" height="120"/>
+    <rect x="150" y="188" width="28" height="192"/>
+    <rect x="180" y="140" width="28" height="240"/>
+    <rect x="210" y="116" width="28" height="264"/>
+    <rect x="240" y="128" width="28" height="252"/>
+    <rect x="270" y="164" width="28" height="216"/>
+    <rect x="300" y="212" width="28" height="168"/>
+    <rect x="330" y="260" width="28" height="120"/>
+    <rect x="360" y="296" width="28" height="84"/>
+    <rect x="390" y="320" width="28" height="60"/>
+    <rect x="420" y="338" width="28" height="42"/>
+    <rect x="450" y="350" width="28" height="30"/>
+    <rect x="480" y="356" width="28" height="24"/>
+    <rect x="510" y="362" width="28" height="18"/>
+    <rect x="540" y="366" width="28" height="14"/>
+    <rect x="570" y="370" width="28" height="10"/>
+    <rect x="600" y="372" width="28" height="8"/>
+    <rect x="630" y="374" width="28" height="6"/>
+    <rect x="660" y="376" width="28" height="4"/>
+    <rect x="690" y="378" width="28" height="2"/>
+  </g>
+
+  <!-- p50 markers -->
+  <g>
+    <!-- BEFORE p50 ~ x slot 8 (300+14=314) -->
+    <line x1="314" y1="80" x2="314" y2="380" stroke="#f97316" stroke-width="1" stroke-dasharray="3 3" opacity="0.85"/>
+    <text x="318" y="94" font-size="10" fill="#f97316">p50 before · 2.0s</text>
+
+    <!-- AFTER p50 ~ x slot 4 (180+14=194) -->
+    <line x1="194" y1="80" x2="194" y2="380" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3 3" opacity="0.85"/>
+    <text x="120" y="94" font-size="10" fill="#60a5fa">p50 after · 1.2s</text>
+  </g>
+
+  <!-- p95 markers -->
+  <g>
+    <!-- BEFORE p95 ~ x slot 17 (570+14=584) -->
+    <line x1="584" y1="80" x2="584" y2="380" stroke="#f97316" stroke-width="1.5" opacity="0.9"/>
+    <text x="588" y="118" font-size="11" font-weight="700" fill="#f97316">p95 · 3.7s</text>
+
+    <!-- AFTER p95 ~ x slot 9 (330+14=344) -->
+    <line x1="344" y1="80" x2="344" y2="380" stroke="#60a5fa" stroke-width="1.5" opacity="0.9"/>
+    <text x="348" y="118" font-size="11" font-weight="700" fill="#60a5fa">p95 · 2.3s</text>
+  </g>
+
+  <!-- p99 markers (the headline) -->
+  <g>
+    <!-- BEFORE p99 ~ x slot 22 (720+14=734) -->
+    <line x1="734" y1="60" x2="734" y2="380" stroke="#f97316" stroke-width="2"/>
+    <circle cx="734" cy="60" r="4" fill="#f97316"/>
+    <text x="738" y="56" font-size="12" font-weight="700" fill="#f97316">p99 before · 5.1s</text>
+
+    <!-- AFTER p99 ~ x slot 12 (420+14=434) -->
+    <line x1="434" y1="60" x2="434" y2="380" stroke="#60a5fa" stroke-width="2"/>
+    <circle cx="434" cy="60" r="4" fill="#60a5fa"/>
+    <text x="438" y="56" font-size="12" font-weight="700" fill="#60a5fa">p99 after · 3.0s</text>
+  </g>
+
+  <!-- p99 reduction annotation arc -->
+  <g>
+    <path d="M 434 168 Q 584 138 734 168" fill="none" stroke="#bef264" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <polygon points="434,168 440,164 440,172" fill="#bef264"/>
+    <polygon points="734,168 728,164 728,172" fill="#bef264"/>
+    <rect x="500" y="138" width="170" height="22" fill="#0e0e10" stroke="#bef264" stroke-width="1" rx="4"/>
+    <text x="585" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#bef264">p99 ↓ ~40%</text>
+  </g>
+
+  <!-- "long tail moved" annotation -->
+  <g font-size="10" fill="#a1a1aa">
+    <text x="800" y="280">long tail</text>
+    <text x="800" y="294">collapsed →</text>
+    <path d="M 870 274 Q 880 250 850 220" fill="none" stroke="#52525b" stroke-width="1"/>
+  </g>
+
+  <!-- X-axis labels -->
+  <g font-size="10" fill="#71717a" text-anchor="middle">
+    <text x="90"  y="400">0</text>
+    <text x="210" y="400">1s</text>
+    <text x="330" y="400">2s</text>
+    <text x="450" y="400">3s</text>
+    <text x="570" y="400">4s</text>
+    <text x="690" y="400">5s</text>
+    <text x="810" y="400">6s</text>
+    <text x="490" y="420" fill="#a1a1aa">end-to-end response time (seconds)</text>
+  </g>
+
+  <!-- Footnote -->
+  <g font-size="10" fill="#52525b">
+    <text x="80" y="460">illustrative; numbers are representative of internal traces, not benchmark figures. p50 moved ~40%, p99 moved ~40% — but the p99 reduction is what the customer felt.</text>
+  </g>
+</svg>

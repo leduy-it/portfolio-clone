@@ -1,62 +1,39 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import { BlogPostView } from '@/components/blog/blog-post-view'
+import { buildMetadataOg } from '@/lib/og-meta'
 import blogPosts from '@/data/blog-posts.json'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
+  const post = blogPosts.find((p) => p.slug === slug)
+  if (!post) return { title: 'Not found — leduy.py' }
+  return buildMetadataOg({
+    title: `${post.title} — leduy.py / research`,
+    description: post.excerpt,
+    route: 'blog-detail',
   })
-}
-
-function renderContent(content: string) {
-  // Split by double newlines to form paragraphs
-  return content.split('\n\n').map((paragraph, i) => (
-    <p key={i}>{paragraph.trim()}</p>
-  ))
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params
-  const post = blogPosts.find((p) => p.slug === slug)
 
-  if (!post) {
-    notFound()
-  }
-
-  return (
-    <main className="min-h-screen bg-[rgb(var(--background))]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-12 md:py-16">
-        {/* Back link */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-1 text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--accent-hover))] transition-colors duration-200 mb-8 group"
-        >
-          <span className="transition-transform duration-200 group-hover:-translate-x-1">
-            &larr;
-          </span>
-          <span>Back to posts</span>
-        </Link>
-
-        {/* Article */}
-        <article>
-          <h1 className="text-3xl font-bold text-white mb-3">{post.title}</h1>
-          <p className="text-sm text-[rgb(var(--text-muted))] mb-8">
-            {formatDate(post.date)}
-          </p>
-          <div className="prose prose-invert prose-lg max-w-none prose-p:text-[rgb(var(--text-secondary))] prose-p:leading-relaxed">
-            {renderContent(post.content)}
-          </div>
-        </article>
-      </div>
-    </main>
+  const sortedPosts = [...blogPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   )
+
+  const postIndex = sortedPosts.findIndex((p) => p.slug === slug)
+  if (postIndex === -1) notFound()
+
+  const post = sortedPosts[postIndex]
+  const prevPost = postIndex < sortedPosts.length - 1 ? sortedPosts[postIndex + 1] : null
+  const nextPost = postIndex > 0 ? sortedPosts[postIndex - 1] : null
+
+  return <BlogPostView post={post} prevPost={prevPost} nextPost={nextPost} />
 }
 
 export function generateStaticParams() {

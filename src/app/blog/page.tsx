@@ -1,5 +1,14 @@
+import type { Metadata } from 'next'
 import blogPosts from '@/data/blog-posts.json'
-import BlogPostCard from '@/components/blog/blog-post-card'
+import BlogHero from '@/components/blog/blog-hero'
+import BlogListStagger from '@/components/blog/blog-list-stagger'
+import { buildMetadataOg } from '@/lib/og-meta'
+
+export const metadata: Metadata = buildMetadataOg({
+  title: 'Research — long-form notes from the production floor',
+  description: 'OCR backbones, agent design, latency war stories — field notes from shipping AI in Vietnam.',
+  route: 'blog',
+})
 
 export default function BlogPage() {
   const posts = [...blogPosts].sort(
@@ -8,15 +17,9 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen bg-[rgb(var(--background))]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-12 md:py-16">
-        <h1 className="text-3xl font-extrabold text-white mb-10">
-          Life Through My Lens
-        </h1>
-        <div>
-          {posts.map((post) => (
-            <BlogPostCard key={post.slug} post={post} />
-          ))}
-        </div>
+      <BlogHero />
+      <div className="mx-auto max-w-[1440px] px-6 py-12 sm:px-8 md:py-16 lg:px-12">
+        <BlogListStagger posts={posts} />
       </div>
     </main>
   )
