@@ -92,10 +92,10 @@ const logoFrameConfig: Record<
     imageSizes: '144px',
   },
   detail: {
-    frame: 'h-36 w-36 rounded-[24px]',
+    frame: 'h-40 w-40 rounded-[24px]',
     inner: 'rounded-[23px]',
     imagePadding: 'p-5',
-    imageSizes: '144px',
+    imageSizes: '160px',
   },
 }
 
@@ -636,141 +636,160 @@ function FeaturedCard({ entry }: { entry: ExperienceEntry }) {
   )
 }
 
-function CompactCard({ entry }: { entry: ExperienceEntry }) {
-  const { locale, t } = useLocale()
+function CompactCard({
+  entry,
+  variant,
+  sectionNumber,
+}: {
+  entry: ExperienceEntry
+  variant: CompactCardVariant
+  sectionNumber?: string
+}) {
+  const { locale } = useLocale()
   const shouldReduceMotion = useReducedMotion()
   const title = pickLocalized(entry as unknown as Record<string, unknown>, 'title', locale)
   const missionsToShow = locale === 'vi' && entry.missions_vi ? entry.missions_vi : entry.missions
-
-  // Hover preview state with 300ms delay
-  const [showPreview, setShowPreview] = useState(false)
-  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const handleMouseEnter = () => {
-    if (shouldReduceMotion) return
-    hoverTimerRef.current = setTimeout(() => setShowPreview(true), 300)
-  }
-
-  const handleMouseLeave = () => {
-    if (hoverTimerRef.current) {
-      clearTimeout(hoverTimerRef.current)
-      hoverTimerRef.current = null
-    }
-    setShowPreview(false)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current)
-    }
-  }, [])
-
-  const firstMission = missionsToShow[0] ?? ''
-  const missionSnippet = firstMission.length > 140 ? firstMission.slice(0, 137) + '…' : firstMission
+  const kind = getExperienceKind(entry.slug)
+  const isWide = variant === 'wide'
+  const missionLimit = isWide ? 2 : 1
+  const skillsLimit = isWide ? 4 : 3
+  const achievementsLimit = isWide ? 3 : 2
+  const accentTextClass = isWarmKind(kind)
+    ? 'text-[rgb(var(--accent-warm))]'
+    : 'text-[rgb(var(--accent))]'
+  const accentBorderClass = isWarmKind(kind)
+    ? 'hover:border-[rgb(var(--accent-warm)/0.82)] hover:ring-[rgb(var(--accent-warm)/0.48)]'
+    : 'hover:border-[rgb(var(--accent)/0.85)] hover:ring-[rgb(var(--accent)/0.55)]'
+  const missionMarkerClass = isWarmKind(kind)
+    ? 'bg-[rgb(var(--accent-warm))]'
+    : 'bg-[rgb(var(--accent))]'
+  const displaySectionNumber = sectionNumber ?? entry.id.slice(-2).padStart(2, '0')
+  const missions = missionsToShow.slice(0, missionLimit)
+  const titleClass = isWide
+    ? 'text-2xl leading-[1.08] sm:text-[1.7rem]'
+    : 'text-[1.35rem] leading-[1.12]'
+  const logoSize: PixelLogoSize = isWide ? 'detail' : 'compact'
+  const logoPanelClass = isWide
+    ? 'flex min-h-[15rem] items-center justify-center border-b border-[rgb(var(--border)/0.76)] px-7 py-8 lg:min-h-full lg:border-b-0 lg:border-r lg:px-8'
+    : 'flex min-h-[12.5rem] items-center justify-center border-b border-[rgb(var(--border)/0.76)] px-6 py-6'
+  const contentClass = isWide
+    ? 'flex min-h-full flex-col px-6 py-6 sm:px-7 sm:py-7 lg:px-8'
+    : 'flex flex-1 flex-col px-5 py-5 sm:px-6 sm:py-6'
 
   return (
-    <MotionLink
-      href={`/experience/${entry.slug}`}
-      aria-label={`View experience entry ${entry.id} — ${title} at ${entry.company}`}
-      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[28px] border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-500 hover:border-[rgb(var(--accent)/0.85)] hover:shadow-[var(--shadow-elevated)] hover:ring-1 hover:ring-[rgb(var(--accent)/0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--accent))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface-page))] motion-reduce:transition-none"
-      initial={shouldReduceMotion ? undefined : 'rest'}
-      animate={shouldReduceMotion ? undefined : 'rest'}
-      whileHover={shouldReduceMotion ? undefined : 'hover'}
-      whileTap={shouldReduceMotion ? undefined : 'tap'}
-      variants={shouldReduceMotion ? undefined : cardVariants}
-      style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.9),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" style={cardTransitionStyle} />
-      <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[rgb(var(--accent)/0.08)] blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" style={cardTransitionStyle} />
-
-      {/* Header: slug + mission/skill count badge + id */}
-      <div className="relative flex items-center justify-between gap-2 border-b border-[rgb(var(--border)/0.85)] px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.24em] text-[rgb(var(--text-secondary))]">
-        <span>/{entry.slug}</span>
-        <div className="flex items-center gap-2">
-          {(missionsToShow.length > 0 || entry.skills.length > 0) && (
-            <span className="rounded-full bg-[rgb(var(--surface-overlay)/0.72)] px-2 py-0.5 text-[10px] tracking-[0.14em] text-[rgb(var(--text-muted))]">
-              · {missionsToShow.length}m · {entry.skills.length}s
-            </span>
-          )}
-          <span className="font-semibold text-[rgb(var(--accent))]">#{entry.id}</span>
-        </div>
-      </div>
-
-      <div className="flex min-h-[10rem] items-center justify-center px-6 py-5">
-        {shouldReduceMotion ? (
-          <ExperienceLogo entry={entry} title={title} size="compact" />
-        ) : (
-          <motion.div
-            variants={logoVariants}
-            style={{ willChange: 'transform, filter' }}
-          >
-            <ExperienceLogo entry={entry} title={title} size="compact" />
-          </motion.div>
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col px-5 pb-5">
-        {entry.dates ? (
-          <div className="font-mono text-xs uppercase tracking-[0.2em] text-[rgb(var(--text-secondary))]">
-            {entry.dates}
-          </div>
-        ) : null}
-
-        <div className="relative mt-3 inline-block pb-3">
-          <h3 className="text-[1.35rem] font-semibold leading-[1.15] tracking-[-0.02em] text-[rgb(var(--text-primary))]">
-            {title}
-          </h3>
-          <HoverUnderline />
-        </div>
-
-        <p className="mt-1 font-mono text-[13px] font-semibold uppercase tracking-[0.18em] text-[rgb(var(--accent))]">
-          {entry.company}
-        </p>
-
-        <AchievementsRow items={extractAchievements(entry.missions, 2)} dense />
-
-        {entry.skills.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {entry.skills.slice(0, 3).map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay))] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[rgb(var(--text-secondary))]"
+    <article className="h-full">
+      <MotionLink
+        href={`/experience/${entry.slug}`}
+        aria-label={`View experience entry ${entry.id} — ${title} at ${entry.company}`}
+        className={`group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[28px] border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-500 hover:shadow-[var(--shadow-elevated)] hover:ring-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--accent))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface-page))] motion-reduce:transition-none ${accentBorderClass} ${isWide ? 'lg:min-h-[25rem]' : 'min-h-[30rem]'}`}
+        initial={shouldReduceMotion ? undefined : 'rest'}
+        animate={shouldReduceMotion ? undefined : 'rest'}
+        whileHover={shouldReduceMotion ? undefined : 'hover'}
+        whileTap={shouldReduceMotion ? undefined : 'tap'}
+        variants={shouldReduceMotion ? undefined : cardVariants}
+        style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
+      >
+        <HoverSideRail kind={kind} />
+        <AccentHalo kind={kind} />
+        <SectionNumber value={displaySectionNumber} />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+          style={{
+            ...cardTransitionStyle,
+            backgroundImage: `radial-gradient(circle at 94% 6%, rgb(${getAccentRgbToken(kind)} / 0.12), transparent 34%), linear-gradient(135deg, rgb(var(--surface-overlay) / 0.22), transparent 48%)`,
+          }}
+        />
+        <div
+          className={`relative z-10 h-full ${isWide ? 'lg:grid lg:grid-cols-[2fr_3fr]' : 'flex flex-col'}`}
+        >
+          <div className={logoPanelClass}>
+            {shouldReduceMotion ? (
+              <ExperienceLogo entry={entry} title={title} size={logoSize} />
+            ) : (
+              <motion.div
+                variants={logoVariants}
+                style={{ willChange: 'transform, filter' }}
               >
-                {skill}
-              </span>
-            ))}
+                <ExperienceLogo entry={entry} title={title} size={logoSize} />
+              </motion.div>
+            )}
           </div>
-        ) : null}
 
-        {/* Bottom row: view link text + chevron in bottom-right */}
-        <div className="mt-auto flex items-end justify-between pt-6">
-          <span
-            aria-hidden="true"
-            className="font-mono text-xs uppercase tracking-[0.2em] text-[rgb(var(--accent))] transition-colors duration-200 group-hover:text-[rgb(var(--accent-warm))] motion-reduce:transition-none"
-          >
-            {t('experience.viewLink')} {entry.slug}
-          </span>
-          <motion.span
-            aria-hidden="true"
-            className="font-mono text-base text-[rgb(var(--accent))]"
-            variants={shouldReduceMotion ? undefined : chevronVariants}
-          >
-            →
-          </motion.span>
+          <div className={contentClass}>
+            <EditorialTagRow
+              kind={kind}
+              dates={entry.dates}
+              id={entry.id}
+              compact={!isWide}
+            />
+
+            <div className="relative mt-5 inline-block pb-3">
+              <h3
+                className={`${titleClass} font-semibold tracking-[-0.03em] text-[rgb(var(--text-primary))]`}
+              >
+                {title}
+              </h3>
+              <HoverUnderline />
+            </div>
+
+            <p
+              className={`mt-1 font-mono text-[12px] font-semibold uppercase tracking-[0.18em] ${accentTextClass}`}
+            >
+              {entry.company}
+            </p>
+
+            {missions.length > 0 ? (
+              <ul className={`mt-5 space-y-3 ${isWide ? 'max-w-[48rem]' : ''}`}>
+                {missions.map((mission, index) => (
+                  <li key={`${entry.id}-mission-${index}`} className="flex gap-3">
+                    <span
+                      aria-hidden="true"
+                      className={`mt-[0.55rem] h-1.5 w-1.5 shrink-0 rounded-full ${missionMarkerClass}`}
+                    />
+                    <p
+                      className={`font-mono text-[12px] leading-relaxed text-[rgb(var(--text-secondary))] ${isWide ? 'line-clamp-3' : 'line-clamp-4'}`}
+                    >
+                      {trimMission(mission, isWide ? 260 : 190)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            <AchievementsRow
+              items={extractAchievements(entry.missions, achievementsLimit)}
+              dense
+            />
+
+            {entry.skills.length > 0 ? (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {entry.skills.slice(0, skillsLimit).map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.78)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[rgb(var(--text-secondary))]"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="mt-auto pt-7">
+              <OpenLogCta
+                label="Open log"
+                slug={entry.slug}
+                reduceMotion={!!shouldReduceMotion}
+                kind={kind}
+                size={isWide ? 'default' : 'compact'}
+              />
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Mission preview panel — revealed after 300ms hover */}
-      <AnimatePresence>
-        {showPreview && missionSnippet && (
-          <MissionPreview snippet={missionSnippet} reduceMotion={!!shouldReduceMotion} />
-        )}
-      </AnimatePresence>
-
-      <CornerCrosshairs />
-    </MotionLink>
+        <CornerCrosshairs kind={kind} />
+      </MotionLink>
+    </article>
   )
 }
 
@@ -779,41 +798,91 @@ function WhatsNextCard({ entry }: { entry: ExperienceEntry }) {
   const shouldReduceMotion = useReducedMotion()
   const title = pickLocalized(entry as unknown as Record<string, unknown>, 'title', locale)
   const quote = pickLocalized(entry as unknown as Record<string, unknown>, 'quote', locale)
+  const kind = getExperienceKind(entry.slug)
 
   return (
-    <motion.div
-      className="group relative overflow-hidden rounded-[30px] border border-dashed border-[rgb(var(--border-muted))] bg-[rgb(var(--surface-card)/0.86)] px-8 py-10 text-center shadow-[var(--shadow-card)] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-500 hover:border-[rgb(var(--accent)/0.65)] hover:bg-[rgb(var(--surface-card)/0.94)] hover:shadow-[var(--shadow-elevated)] motion-reduce:transition-none"
+    <motion.article
+      className="group relative overflow-hidden rounded-[30px] border border-dashed border-[rgb(var(--border-muted)/0.58)] bg-[rgb(var(--surface-card)/0.82)] px-6 py-6 shadow-[var(--shadow-card)] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-500 hover:border-[rgb(var(--accent-warm)/0.62)] hover:bg-[rgb(var(--surface-card)/0.94)] hover:shadow-[var(--shadow-elevated)] motion-reduce:transition-none sm:px-8 sm:py-8"
       whileHover={shouldReduceMotion ? undefined : { y: -3 }}
       transition={shouldReduceMotion ? undefined : SPRING_SOFT}
       style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
     >
+      <style>
+        {`
+          @keyframes exp-open-slot-glitch {
+            0%, 92%, 100% { transform: translate3d(0, 0, 0); }
+            94% { transform: translate3d(2px, -1px, 0); }
+            96% { transform: translate3d(-1px, 1px, 0); }
+            98% { transform: translate3d(1px, 0, 0); }
+          }
+
+          .exp-open-slot-glyph {
+            animation: exp-open-slot-glitch 4s infinite;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .exp-open-slot-glyph {
+              animation: none;
+            }
+          }
+        `}
+      </style>
+      <HoverSideRail kind={kind} />
+      <AccentHalo kind={kind} />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-25"
+        className="pointer-events-none absolute inset-0 opacity-20"
         style={{
           backgroundImage:
             'linear-gradient(90deg, rgb(var(--border)) 1px, transparent 1px), linear-gradient(rgb(var(--border)) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
+          backgroundSize: '28px 28px',
         }}
       />
-      <span className="absolute right-5 top-5 font-mono text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--text-muted))]">
-        #{entry.id}
-      </span>
-      <div className="relative font-mono text-5xl text-[rgb(var(--text-muted)/0.55)]">???</div>
-      <h3 className="relative mt-5 text-2xl font-semibold tracking-[-0.04em] text-[rgb(var(--text-primary))]">
-        {title}
-      </h3>
-      <p className="relative mt-2 font-mono text-xs uppercase tracking-[0.24em] text-[rgb(var(--accent-warm))]">
-        {entry.company}
-      </p>
-      {quote ? (
-        <p className="relative mx-auto mt-5 max-w-md font-mono text-sm italic leading-relaxed text-[rgb(var(--text-secondary))]">
-          &ldquo;{quote}&rdquo;
-        </p>
-      ) : null}
-      <div className="relative mt-6 inline-flex rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.68)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--text-muted))]">
-        checksum: {entry.checksum}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+        style={{
+          ...cardTransitionStyle,
+          backgroundImage:
+            'radial-gradient(circle at 92% 12%, rgb(var(--accent-warm) / 0.12), transparent 34%)',
+        }}
+      />
+
+      <div className="relative z-10 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)_240px] lg:items-center">
+        <div className="flex min-h-[10rem] items-center justify-center border-b border-dashed border-[rgb(var(--border-muted)/0.5)] pb-5 lg:min-h-[12rem] lg:border-b-0 lg:border-r lg:pb-0 lg:pr-8">
+          <div className="exp-open-slot-glyph font-mono text-[7rem] font-semibold leading-none tracking-normal text-[rgb(var(--accent-warm)/0.25)] sm:text-[9rem]">
+            ??
+          </div>
+        </div>
+
+        <div className="min-w-0 text-left">
+          <EditorialTagRow kind={kind} id={entry.id} />
+          <h3 className="mt-5 max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-[rgb(var(--text-primary))] sm:text-[2.35rem]">
+            {title}
+          </h3>
+          <p className="mt-3 font-mono text-xs uppercase tracking-[0.24em] text-[rgb(var(--accent-warm))]">
+            {entry.company}
+          </p>
+          {quote ? (
+            <p className="mt-5 max-w-2xl border-l border-[rgb(var(--accent-warm)/0.45)] pl-4 font-mono text-sm italic leading-relaxed text-[rgb(var(--text-secondary))] sm:text-[15px]">
+              &ldquo;{quote}&rdquo;
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex flex-col items-start gap-4 border-t border-dashed border-[rgb(var(--border-muted)/0.5)] pt-5 font-mono uppercase lg:items-end lg:border-t-0 lg:pt-0">
+          <span className="rounded-full border border-[rgb(var(--accent-warm)/0.45)] bg-[rgb(var(--accent-warm)/0.1)] px-3 py-1.5 text-[10px] font-semibold tracking-[0.22em] text-[rgb(var(--accent-warm))]">
+            request a slot
+          </span>
+          <div className="grid gap-2 text-left text-[10px] tracking-[0.22em] text-[rgb(var(--text-muted))] lg:text-right">
+            <span className="text-[rgb(var(--border-muted))]">calendar</span>
+            <span className="text-[rgb(var(--text-secondary))]">2026 onward</span>
+          </div>
+          <span className="rounded-md border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.62)] px-2.5 py-1 text-[10px] tracking-[0.18em] text-[rgb(var(--text-muted))]">
+            checksum: {entry.checksum}
+          </span>
+        </div>
       </div>
-    </motion.div>
+    </motion.article>
   )
 }
