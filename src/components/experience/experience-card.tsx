@@ -1,14 +1,25 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { useLocale } from '@/lib/i18n'
+import { pickLocalized } from '@/lib/i18n'
+import { EASE_OUT_EXPO, EASE_OUT_QUART, SPRING_SOFT } from './experience-timeline-reveal'
 
 interface ExperienceEntry {
   id: string
   slug: string
   title: string
+  title_vi?: string
   company: string
   dates: string
   quote: string
+  quote_vi?: string
   missions: string[]
+  missions_vi?: string[]
   skills: string[]
   image: string
   logo: string | null
@@ -19,6 +30,95 @@ interface ExperienceCardProps {
   entry: ExperienceEntry
   featured?: boolean
 }
+
+type PixelLogoSize = 'featured' | 'compact' | 'detail'
+
+const MotionLink = motion.create(Link)
+
+const cardVariants = {
+  rest: { y: 0, scale: 1 },
+  hover: {
+    y: -4,
+    scale: 1.015,
+    transition: SPRING_SOFT,
+  },
+  tap: {
+    y: -1,
+    scale: 0.992,
+    transition: {
+      duration: 0.18,
+      ease: EASE_OUT_QUART,
+    },
+  },
+}
+
+const logoVariants = {
+  rest: {
+    scale: 1,
+    filter: 'brightness(1)',
+  },
+  hover: {
+    scale: 1.04,
+    filter: 'brightness(1.03)',
+    transition: {
+      duration: 0.5,
+      ease: EASE_OUT_EXPO,
+    },
+  },
+}
+
+const chevronVariants = {
+  rest: { x: 0, opacity: 0.55 },
+  hover: {
+    x: 6,
+    opacity: 1,
+    transition: {
+      duration: 0.22,
+      ease: EASE_OUT_QUART,
+    },
+  },
+  tap: {
+    x: 3,
+    opacity: 1,
+    transition: {
+      duration: 0.16,
+      ease: EASE_OUT_QUART,
+    },
+  },
+}
+
+const logoFrameConfig: Record<
+  PixelLogoSize,
+  {
+    frame: string
+    inner: string
+    imagePadding: string
+    imageSizes: string
+  }
+> = {
+  featured: {
+    frame: 'h-52 w-52 rounded-[28px]',
+    inner: 'rounded-[27px]',
+    imagePadding: 'p-6',
+    imageSizes: '208px',
+  },
+  compact: {
+    frame: 'h-36 w-36 rounded-[22px]',
+    inner: 'rounded-[21px]',
+    imagePadding: 'p-3',
+    imageSizes: '144px',
+  },
+  detail: {
+    frame: 'h-36 w-36 rounded-[24px]',
+    inner: 'rounded-[23px]',
+    imagePadding: 'p-5',
+    imageSizes: '144px',
+  },
+}
+
+const cardTransitionStyle = {
+  transitionTimingFunction: 'var(--ease-out-expo)',
+} as const
 
 export function ExperienceCard({ entry, featured = false }: ExperienceCardProps) {
   const isWhatsNext = entry.slug === 'whats-next'
@@ -34,190 +134,601 @@ export function ExperienceCard({ entry, featured = false }: ExperienceCardProps)
   return <CompactCard entry={entry} />
 }
 
-function FeaturedCard({ entry }: { entry: ExperienceEntry }) {
+function getFallbackCharacter(entry: ExperienceEntry) {
+  const source = (entry.company || entry.title || '?').trim()
+  const match = source.match(/[A-Za-z0-9?]/)
+  return (match?.[0] ?? '?').toUpperCase()
+}
+
+function buildPixelMask(seedChar: string) {
+  const cells: boolean[] = []
+  let state = seedChar.charCodeAt(0) || 63
+
+  for (let row = 0; row < 8; row += 1) {
+    for (let col = 0; col < 4; col += 1) {
+      state = (state * 1664525 + 1013904223 + row * 17 + col * 31) >>> 0
+      cells.push(state % 10 < 4)
+    }
+  }
+
+  if (!cells.some(Boolean)) {
+    cells[10] = true
+  }
+
+  return cells
+}
+
+function LogoFrameShell({
+  size,
+  children,
+}: {
+  size: PixelLogoSize
+  children: ReactNode
+}) {
+  const config = logoFrameConfig[size]
+
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[color:var(--color-accent)]">
-      {/* Entry number */}
-      <span className="absolute right-6 top-6 z-10 font-mono text-sm font-bold text-[color:var(--color-accent)]">
-        #{entry.id}
+    <div
+      className={`relative flex ${config.frame} items-center justify-center overflow-hidden border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.72)]`}
+      style={{ boxShadow: 'inset 0 1px 0 rgb(var(--foreground) / 0.06)' }}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            'linear-gradient(90deg, rgb(var(--border) / 0.45) 1px, transparent 1px), linear-gradient(rgb(var(--border) / 0.45) 1px, transparent 1px)',
+          backgroundSize: '8px 8px',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-[1px] border border-[rgb(var(--border-muted)/0.42)] ${config.inner}`}
+      />
+      {children}
+    </div>
+  )
+}
+
+function PixelLogoMark({ entry }: { entry: ExperienceEntry }) {
+  const cells = buildPixelMask(getFallbackCharacter(entry))
+
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className="relative h-4/5 w-4/5"
+      shapeRendering="crispEdges"
+      aria-hidden="true"
+    >
+      {Array.from({ length: 8 }, (_, row) =>
+        Array.from({ length: 8 }, (_, col) => {
+          const mirroredCol = col < 4 ? col : 7 - col
+          const isOn = cells[row * 4 + mirroredCol]
+
+          return isOn ? (
+            <rect
+              key={`${row}-${col}`}
+              x={col * 8}
+              y={row * 8}
+              width="8"
+              height="8"
+              fill="rgb(var(--accent))"
+              shapeRendering="crispEdges"
+            />
+          ) : null
+        })
+      )}
+    </svg>
+  )
+}
+
+export function PixelLogoFallback({
+  entry,
+  size,
+}: {
+  entry: ExperienceEntry
+  size: PixelLogoSize
+}) {
+  return (
+    <LogoFrameShell size={size}>
+      <PixelLogoMark entry={entry} />
+    </LogoFrameShell>
+  )
+}
+
+function ExperienceLogo({
+  entry,
+  title,
+  size,
+}: {
+  entry: ExperienceEntry
+  title: string
+  size: PixelLogoSize
+}) {
+  const config = logoFrameConfig[size]
+
+  if (!entry.image) {
+    return <PixelLogoFallback entry={entry} size={size} />
+  }
+
+  return (
+    <LogoFrameShell size={size}>
+      <div className="relative h-full w-full">
+        <Image
+          src={entry.image}
+          alt={title}
+          fill
+          unoptimized
+          className={`object-contain ${config.imagePadding}`}
+          sizes={config.imageSizes}
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
+    </LogoFrameShell>
+  )
+}
+
+function HoverUnderline() {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[rgb(var(--accent))] opacity-80 transition-[transform,opacity] duration-500 group-hover:scale-x-100 group-hover:opacity-100 motion-reduce:transition-none"
+      style={cardTransitionStyle}
+    />
+  )
+}
+
+function CornerCrosshairs() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {(['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const).map((corner) => {
+        const base =
+          'absolute h-3 w-3 transition-[opacity,transform] duration-500 motion-reduce:transition-none opacity-40 group-hover:opacity-100'
+        const positions: Record<typeof corner, string> = {
+          'top-left': 'left-3 top-3',
+          'top-right': 'right-3 top-3',
+          'bottom-left': 'left-3 bottom-3',
+          'bottom-right': 'right-3 bottom-3',
+        }
+        const borders: Record<typeof corner, string> = {
+          'top-left': 'border-l border-t',
+          'top-right': 'border-r border-t',
+          'bottom-left': 'border-l border-b',
+          'bottom-right': 'border-r border-b',
+        }
+        return (
+          <span
+            key={corner}
+            className={`${base} ${positions[corner]} ${borders[corner]} border-[rgb(var(--accent)/0.85)] group-hover:scale-110`}
+            style={cardTransitionStyle}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+function OpenLogCta({ label, slug, reduceMotion }: { label: string; slug: string; reduceMotion: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative inline-flex items-center gap-2 self-start rounded-md border border-[rgb(var(--accent)/0.5)] bg-[rgb(var(--accent)/0.06)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--accent))] shadow-[inset_0_-1px_0_rgb(var(--accent)/0.15)] transition-[border-color,background-color,box-shadow,color] duration-300 group-hover:border-[rgb(var(--accent))] group-hover:bg-[rgb(var(--accent)/0.14)] group-hover:shadow-[0_8px_24px_-12px_rgb(var(--accent)/0.65)] motion-reduce:transition-none"
+      style={cardTransitionStyle}
+    >
+      <span>{label}</span>
+      <span className="text-[rgb(var(--text-muted))]">/{slug}</span>
+      <motion.span
+        className="text-[rgb(var(--accent))]"
+        animate={
+          reduceMotion
+            ? undefined
+            : {
+                x: [0, 4, 0, 4, 0],
+                opacity: [1, 1, 0.7, 1, 1],
+              }
+        }
+        transition={
+          reduceMotion
+            ? undefined
+            : {
+                duration: 2.4,
+                repeat: Infinity,
+                repeatDelay: 2.6,
+                ease: EASE_OUT_QUART,
+              }
+        }
+      >
+        →
+      </motion.span>
+    </span>
+  )
+}
+
+const METRIC_PATTERNS: RegExp[] = [
+  /\d+%\s*(?:→|->|–|—|-)\s*\d+%/g,
+  /~?\d+%\s*(?:lower|less|reduced|cut|reduction|improvement|increase|boost|gain|faster|cheaper|higher|fewer|more)/gi,
+  /(?:from\s+)?\d+%\s+to\s+\d+%/gi,
+  /\d{1,3}(?:,\d{3})*[km]?\+?\s*(?:questions|customers|users|requests|hours|docs|images|datasets|labels|tokens|jobs|merchants|banks|countries|conversions|deployments|samples)/gi,
+  /\d+x\s*(?:faster|throughput|cheaper|higher|lower|better)/gi,
+  /\$\d+(?:\.\d+)?[kmb]?\+?/gi,
+  /~?\d+\.\d+%/g,
+]
+
+function extractAchievements(missions: string[], maxN = 3): string[] {
+  const out: string[] = []
+  const seen = new Set<string>()
+  for (const m of missions) {
+    for (const re of METRIC_PATTERNS) {
+      const matches = m.match(re)
+      if (!matches) continue
+      for (const match of matches) {
+        const norm = match.replace(/\s+/g, ' ').trim()
+        const key = norm.toLowerCase()
+        if (seen.has(key)) continue
+        seen.add(key)
+        out.push(norm)
+        if (out.length >= maxN) return out
+      }
+    }
+  }
+  return out
+}
+
+function AchievementsRow({ items, dense = false }: { items: string[]; dense?: boolean }) {
+  if (items.length === 0) return null
+  return (
+    <div
+      className={`flex flex-wrap items-center gap-2 ${dense ? 'mt-3' : 'mt-5'}`}
+      aria-label="key impact metrics"
+    >
+      <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[rgb(var(--text-muted))]">
+        impact
       </span>
+      <span className="text-[rgb(var(--border-muted))]">/</span>
+      {items.map((item, i) => (
+        <span
+          key={`${item}-${i}`}
+          className="group/achv relative inline-flex items-center gap-1.5 rounded-md border border-[rgb(var(--accent-warm)/0.55)] bg-[rgb(var(--accent-warm)/0.1)] px-2.5 py-1 font-mono text-[11px] font-semibold tracking-tight text-[rgb(var(--accent-warm))] shadow-[inset_0_-1px_0_rgb(var(--accent-warm)/0.25)] transition-[transform,box-shadow,background-color] duration-300 hover:bg-[rgb(var(--accent-warm)/0.18)] hover:shadow-[0_6px_20px_-10px_rgb(var(--accent-warm)/0.6)] motion-reduce:transition-none"
+        >
+          <span className="text-[10px]">▲</span>
+          <span>{item}</span>
+        </span>
+      ))}
+    </div>
+  )
+}
 
-      <div className="grid md:grid-cols-5">
-        {/* Image section — left 2/5 */}
-        {entry.image && (
-          <div className="md:col-span-2 flex items-center justify-center p-8 md:p-12">
-            <div className="relative h-44 w-44 overflow-hidden rounded-lg">
-              <Image
-                src={entry.image}
-                alt={entry.title}
-                fill
-                className="object-contain group-hover:scale-105 transition-transform duration-500"
-                sizes="176px"
-              />
-            </div>
+/** Compact mission preview panel — animated in/out with AnimatePresence */
+function MissionPreview({ snippet, reduceMotion }: { snippet: string; reduceMotion: boolean }) {
+  if (!snippet) return null
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-8"
+      style={{
+        background:
+          'linear-gradient(to top, rgb(var(--surface-card)) 60%, rgb(var(--surface-card) / 0))',
+      }}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 8 }}
+      animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      exit={reduceMotion ? undefined : { opacity: 0, y: 6 }}
+      transition={reduceMotion ? undefined : { duration: 0.28, ease: EASE_OUT_QUART }}
+    >
+      <p className="line-clamp-3 font-mono text-[11px] leading-relaxed text-[rgb(var(--text-secondary)/0.9)]">
+        {snippet}
+      </p>
+    </motion.div>
+  )
+}
+
+function HoverQuoteTeaser({ quote }: { quote: string }) {
+  if (!quote) return null
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[100%] bg-gradient-to-t from-[rgb(var(--surface-card))] via-[rgb(var(--surface-card)/0.96)] to-[rgb(var(--surface-card)/0.0)] px-5 pb-5 pt-10 opacity-0 transition-[transform,opacity] duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none"
+      style={cardTransitionStyle}
+    >
+      <p className="font-mono text-[12px] italic leading-relaxed text-[rgb(var(--text-secondary))]">
+        <span className="text-[rgb(var(--accent))]">&ldquo;</span>
+        {quote}
+        <span className="text-[rgb(var(--accent))]">&rdquo;</span>
+      </p>
+    </div>
+  )
+}
+
+function FeaturedCard({ entry }: { entry: ExperienceEntry }) {
+  const { locale, t } = useLocale()
+  const shouldReduceMotion = useReducedMotion()
+  const title = pickLocalized(entry as unknown as Record<string, unknown>, 'title', locale)
+  const missionsToShow = locale === 'vi' && entry.missions_vi ? entry.missions_vi : entry.missions
+
+  return (
+    <MotionLink
+      href={`/experience/${entry.slug}`}
+      aria-label={`View experience entry ${entry.id} — ${title} at ${entry.company}`}
+      className="group relative block overflow-hidden rounded-[30px] border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-500 hover:border-[rgb(var(--accent)/0.85)] hover:shadow-[var(--shadow-elevated)] hover:ring-1 hover:ring-[rgb(var(--accent)/0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--accent))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface-page))] motion-reduce:transition-none"
+      initial={shouldReduceMotion ? undefined : 'rest'}
+      animate={shouldReduceMotion ? undefined : 'rest'}
+      whileHover={shouldReduceMotion ? undefined : 'hover'}
+      whileTap={shouldReduceMotion ? undefined : 'tap'}
+      variants={shouldReduceMotion ? undefined : cardVariants}
+      style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+        style={{
+          ...cardTransitionStyle,
+          backgroundImage:
+            'radial-gradient(circle at top right, rgb(var(--accent) / 0.12), transparent 34%), radial-gradient(circle at bottom left, rgb(var(--accent-warm) / 0.08), transparent 30%)',
+        }}
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.9),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" style={cardTransitionStyle} />
+
+      <div className="relative border-b border-[rgb(var(--border)/0.85)] px-6 py-4 font-mono text-[11px] uppercase tracking-[0.28em] text-[rgb(var(--text-muted))] sm:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.72)] px-2.5 py-1 text-[rgb(var(--accent))]">
+              featured log
+            </span>
+            <span>/{entry.slug}</span>
           </div>
-        )}
+          <span className="text-[rgb(var(--accent))]">#{entry.id}</span>
+        </div>
+      </div>
 
-        {/* Content section — right 3/5 */}
-        <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-center bg-[color:var(--color-surface-card)]/50">
-          {/* Date */}
-          {entry.dates && (
-            <div className="mb-3 flex items-center gap-2 font-mono text-xs text-[color:var(--color-text-muted)]">
-              <span className="text-[color:var(--color-accent)]">📅</span>
-              <span>{entry.dates}</span>
-            </div>
+      <div className="relative grid gap-0 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div className="flex items-center justify-center border-b border-[rgb(var(--border)/0.85)] px-6 py-8 lg:border-b-0 lg:border-r lg:px-10 lg:py-10">
+          {shouldReduceMotion ? (
+            <ExperienceLogo entry={entry} title={title} size="featured" />
+          ) : (
+            <motion.div
+              variants={logoVariants}
+              style={{ willChange: 'transform, filter' }}
+            >
+              <ExperienceLogo entry={entry} title={title} size="featured" />
+            </motion.div>
           )}
+        </div>
 
-          {/* Title */}
-          <h2 className="mb-2 font-mono text-xl font-bold uppercase tracking-wide text-[color:var(--color-text-primary)]">
-            {entry.title}
-          </h2>
+        <div className="flex flex-col px-6 py-7 sm:px-8 sm:py-8">
+          <div className="flex flex-wrap items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-[rgb(var(--text-muted))]">
+            {entry.dates ? <span>{entry.dates}</span> : null}
+            <span className="text-[rgb(var(--border-muted))]">·</span>
+            <span className="text-[rgb(var(--accent))]">{entry.company}</span>
+          </div>
 
-          {/* Company */}
-          <p className="mb-4 font-mono text-sm font-semibold text-[color:var(--color-accent)]">
-            {entry.company}
-          </p>
+          <div className="relative mt-5 inline-block pb-3">
+            <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-[rgb(var(--text-primary))] transition-colors duration-300 group-hover:text-[rgb(var(--text-primary))] sm:text-[2.15rem]">
+              {title}
+            </h2>
+            <HoverUnderline />
+          </div>
 
-          {/* Mission (first bullet) */}
-          {entry.missions.length > 0 && (
-            <p className="mb-5 font-mono text-sm leading-relaxed text-[color:var(--color-text-secondary)]">
-              {entry.missions[0]}
+          {missionsToShow.length > 0 ? (
+            <p className="mt-4 max-w-2xl font-mono text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+              {missionsToShow[0]}
             </p>
-          )}
+          ) : null}
 
-          {/* Skills */}
-          {entry.skills.length > 0 && (
-            <div className="mb-5 flex flex-wrap gap-2">
-              {entry.skills.map((skill) => (
+          <AchievementsRow items={extractAchievements(entry.missions, 3)} />
+
+          {entry.skills.length > 0 ? (
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              {entry.skills.slice(0, 5).map((skill) => (
                 <span
                   key={skill}
-                  className="rounded border border-[color:var(--color-border)] px-2 py-0.5 font-mono text-xs text-[color:var(--color-text-muted)]"
+                  className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.72)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[rgb(var(--text-secondary))]"
                 >
                   {skill}
                 </span>
               ))}
             </div>
-          )}
+          ) : null}
 
-          {/* View link */}
-          <Link
-            href={`/experience/${entry.slug}`}
-            className="font-mono text-xs text-[color:var(--color-accent)] transition-colors hover:text-[color:var(--color-accent-hover)]"
-          >
-            $ view --slug {entry.slug}
-          </Link>
+          <div className="mt-6 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--text-muted))]">
+            <span className="rounded-full border border-[rgb(var(--border))] px-2.5 py-1">
+              {missionsToShow.length.toString().padStart(2, '0')} missions
+            </span>
+            <span className="rounded-full border border-[rgb(var(--border))] px-2.5 py-1">
+              {entry.checksum}
+            </span>
+          </div>
+
+          <div className="mt-8">
+            <OpenLogCta
+              label={t('experience.viewLink') || 'open log'}
+              slug={entry.slug}
+              reduceMotion={!!shouldReduceMotion}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      <CornerCrosshairs />
+    </MotionLink>
   )
 }
 
 function CompactCard({ entry }: { entry: ExperienceEntry }) {
+  const { locale, t } = useLocale()
+  const shouldReduceMotion = useReducedMotion()
+  const title = pickLocalized(entry as unknown as Record<string, unknown>, 'title', locale)
+  const missionsToShow = locale === 'vi' && entry.missions_vi ? entry.missions_vi : entry.missions
+
+  // Hover preview state with 300ms delay
+  const [showPreview, setShowPreview] = useState(false)
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const handleMouseEnter = () => {
+    if (shouldReduceMotion) return
+    hoverTimerRef.current = setTimeout(() => setShowPreview(true), 300)
+  }
+
+  const handleMouseLeave = () => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current)
+      hoverTimerRef.current = null
+    }
+    setShowPreview(false)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current)
+    }
+  }, [])
+
+  const firstMission = missionsToShow[0] ?? ''
+  const missionSnippet = firstMission.length > 140 ? firstMission.slice(0, 137) + '…' : firstMission
+
   return (
-    <div className="group relative flex h-full flex-col rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-card)] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-[color:var(--color-accent)]">
-      {/* Entry number */}
-      <span className="absolute right-4 top-4 z-10 font-mono text-xs font-bold text-[color:var(--color-accent)]">
-        #{entry.id}
-      </span>
+    <MotionLink
+      href={`/experience/${entry.slug}`}
+      aria-label={`View experience entry ${entry.id} — ${title} at ${entry.company}`}
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[28px] border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] shadow-[var(--shadow-card)] transition-[transform,box-shadow,border-color] duration-500 hover:border-[rgb(var(--accent)/0.85)] hover:shadow-[var(--shadow-elevated)] hover:ring-1 hover:ring-[rgb(var(--accent)/0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--accent))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--surface-page))] motion-reduce:transition-none"
+      initial={shouldReduceMotion ? undefined : 'rest'}
+      animate={shouldReduceMotion ? undefined : 'rest'}
+      whileHover={shouldReduceMotion ? undefined : 'hover'}
+      whileTap={shouldReduceMotion ? undefined : 'tap'}
+      variants={shouldReduceMotion ? undefined : cardVariants}
+      style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.9),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" style={cardTransitionStyle} />
+      <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[rgb(var(--accent)/0.08)] blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" style={cardTransitionStyle} />
 
-      {/* Image — centered at top */}
-      {entry.image && (
-        <div className="flex items-center justify-center pt-8 pb-4">
-          <div className="relative h-32 w-32 overflow-hidden rounded-lg">
-            <Image
-              src={entry.image}
-              alt={entry.title}
-              fill
-              className="object-contain group-hover:scale-105 transition-transform duration-500"
-              sizes="128px"
-            />
-          </div>
+      {/* Header: slug + mission/skill count badge + id */}
+      <div className="relative flex items-center justify-between gap-2 border-b border-[rgb(var(--border)/0.85)] px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.24em] text-[rgb(var(--text-secondary))]">
+        <span>/{entry.slug}</span>
+        <div className="flex items-center gap-2">
+          {(missionsToShow.length > 0 || entry.skills.length > 0) && (
+            <span className="rounded-full bg-[rgb(var(--surface-overlay)/0.72)] px-2 py-0.5 text-[10px] tracking-[0.14em] text-[rgb(var(--text-muted))]">
+              · {missionsToShow.length}m · {entry.skills.length}s
+            </span>
+          )}
+          <span className="font-semibold text-[rgb(var(--accent))]">#{entry.id}</span>
         </div>
-      )}
+      </div>
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col px-6 pb-6">
-        {/* Date */}
-        {entry.dates && (
-          <div className="mb-2 flex items-center gap-1 font-mono text-xs text-[color:var(--color-text-muted)]">
-            <span className="text-[color:var(--color-accent)] text-[10px]">📅</span>
-            <span>{entry.dates}</span>
-          </div>
+      <div className="flex min-h-[10rem] items-center justify-center px-6 py-5">
+        {shouldReduceMotion ? (
+          <ExperienceLogo entry={entry} title={title} size="compact" />
+        ) : (
+          <motion.div
+            variants={logoVariants}
+            style={{ willChange: 'transform, filter' }}
+          >
+            <ExperienceLogo entry={entry} title={title} size="compact" />
+          </motion.div>
         )}
+      </div>
 
-        {/* Title */}
-        <h3 className="mb-1 font-mono text-sm font-bold uppercase tracking-wide text-[color:var(--color-text-primary)]">
-          {entry.title}
-        </h3>
+      <div className="flex flex-1 flex-col px-5 pb-5">
+        {entry.dates ? (
+          <div className="font-mono text-xs uppercase tracking-[0.2em] text-[rgb(var(--text-secondary))]">
+            {entry.dates}
+          </div>
+        ) : null}
 
-        {/* Company */}
-        <p className="mb-3 font-mono text-xs text-[color:var(--color-accent)]">
+        <div className="relative mt-3 inline-block pb-3">
+          <h3 className="text-[1.35rem] font-semibold leading-[1.15] tracking-[-0.02em] text-[rgb(var(--text-primary))]">
+            {title}
+          </h3>
+          <HoverUnderline />
+        </div>
+
+        <p className="mt-1 font-mono text-[13px] font-semibold uppercase tracking-[0.18em] text-[rgb(var(--accent))]">
           {entry.company}
         </p>
 
-        {/* Skills */}
-        {entry.skills.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-1">
+        <AchievementsRow items={extractAchievements(entry.missions, 2)} dense />
+
+        {entry.skills.length > 0 ? (
+          <div className="mt-4 flex flex-wrap gap-2">
             {entry.skills.slice(0, 3).map((skill) => (
               <span
                 key={skill}
-                className="rounded border border-[color:var(--color-border)] px-1.5 py-0.5 font-mono text-[10px] text-[color:var(--color-text-muted)]"
+                className="rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay))] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[rgb(var(--text-secondary))]"
               >
                 {skill}
               </span>
             ))}
           </div>
-        )}
+        ) : null}
 
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* View link */}
-        <Link
-          href={`/experience/${entry.slug}`}
-          className="font-mono text-[10px] text-[color:var(--color-accent)] transition-colors hover:text-[color:var(--color-accent-hover)]"
-        >
-          $ view --slug {entry.slug}
-        </Link>
+        {/* Bottom row: view link text + chevron in bottom-right */}
+        <div className="mt-auto flex items-end justify-between pt-6">
+          <span
+            aria-hidden="true"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-[rgb(var(--accent))] transition-colors duration-200 group-hover:text-[rgb(var(--accent-warm))] motion-reduce:transition-none"
+          >
+            {t('experience.viewLink')} {entry.slug}
+          </span>
+          <motion.span
+            aria-hidden="true"
+            className="font-mono text-base text-[rgb(var(--accent))]"
+            variants={shouldReduceMotion ? undefined : chevronVariants}
+          >
+            →
+          </motion.span>
+        </div>
       </div>
-    </div>
+
+      {/* Mission preview panel — revealed after 300ms hover */}
+      <AnimatePresence>
+        {showPreview && missionSnippet && (
+          <MissionPreview snippet={missionSnippet} reduceMotion={!!shouldReduceMotion} />
+        )}
+      </AnimatePresence>
+
+      <CornerCrosshairs />
+    </MotionLink>
   )
 }
 
 function WhatsNextCard({ entry }: { entry: ExperienceEntry }) {
+  const { locale } = useLocale()
+  const shouldReduceMotion = useReducedMotion()
+  const title = pickLocalized(entry as unknown as Record<string, unknown>, 'title', locale)
+  const quote = pickLocalized(entry as unknown as Record<string, unknown>, 'quote', locale)
+
   return (
-    <div className="group relative flex flex-col items-center justify-center rounded-2xl border border-dashed border-[color:var(--color-border-muted)] bg-[color:var(--color-surface-card)] p-8 text-center transition-all duration-300 hover:border-[color:var(--color-accent)] hover:shadow-lg hover:shadow-[color:var(--color-accent)]/5">
-      {/* Entry number */}
-      <span className="absolute right-4 top-4 font-mono text-xs font-bold text-[color:var(--color-text-muted)]">
+    <motion.div
+      className="group relative overflow-hidden rounded-[30px] border border-dashed border-[rgb(var(--border-muted))] bg-[rgb(var(--surface-card)/0.86)] px-8 py-10 text-center shadow-[var(--shadow-card)] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-500 hover:border-[rgb(var(--accent)/0.65)] hover:bg-[rgb(var(--surface-card)/0.94)] hover:shadow-[var(--shadow-elevated)] motion-reduce:transition-none"
+      whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+      transition={shouldReduceMotion ? undefined : SPRING_SOFT}
+      style={{ ...cardTransitionStyle, willChange: shouldReduceMotion ? undefined : 'transform' }}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-25"
+        style={{
+          backgroundImage:
+            'linear-gradient(90deg, rgb(var(--border)) 1px, transparent 1px), linear-gradient(rgb(var(--border)) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+      <span className="absolute right-5 top-5 font-mono text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--text-muted))]">
         #{entry.id}
       </span>
-
-      {/* Question marks */}
-      <div className="mb-4 font-mono text-4xl text-[color:var(--color-text-muted)] opacity-50">
-        ???
-      </div>
-
-      {/* Title */}
-      <h3 className="mb-1 font-mono text-sm font-bold uppercase tracking-wide text-[color:var(--color-text-primary)]">
-        {entry.title}
+      <div className="relative font-mono text-5xl text-[rgb(var(--text-muted)/0.55)]">???</div>
+      <h3 className="relative mt-5 text-2xl font-semibold tracking-[-0.04em] text-[rgb(var(--text-primary))]">
+        {title}
       </h3>
-
-      {/* Company */}
-      <p className="mb-4 font-mono text-xs text-[color:var(--color-text-muted)]">
+      <p className="relative mt-2 font-mono text-xs uppercase tracking-[0.24em] text-[rgb(var(--accent-warm))]">
         {entry.company}
       </p>
-
-      {/* Quote */}
-      {entry.quote && (
-        <p className="font-mono text-xs italic text-[color:var(--color-text-muted)]">
-          &ldquo;{entry.quote}&rdquo;
+      {quote ? (
+        <p className="relative mx-auto mt-5 max-w-md font-mono text-sm italic leading-relaxed text-[rgb(var(--text-secondary))]">
+          &ldquo;{quote}&rdquo;
         </p>
-      )}
-
-      {/* Checksum */}
-      <div className="mt-4 font-mono text-[10px] text-[color:var(--color-border-muted)]">
-        CHECKSUM: {entry.checksum}
+      ) : null}
+      <div className="relative mt-6 inline-flex rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay)/0.68)] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-[rgb(var(--text-muted))]">
+        checksum: {entry.checksum}
       </div>
-    </div>
+    </motion.div>
   )
 }

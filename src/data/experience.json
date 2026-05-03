@@ -2,130 +2,305 @@
   {
     "id": "001",
     "slug": "growtrics",
-    "title": "Founding Software Engineer",
+    "title": "Full-Stack AI Engineer",
+    "title_vi": "Full-Stack AI Engineer",
     "company": "GrowtricsAI",
-    "dates": "May 2025 – Dec 2025",
-    "quote": "Probably pulled a '997' (outdoing the infamous 996), but honestly loved every moment in such a fast-paced environment with brilliant, relentless founders!",
+    "dates": "Dec 2025 – Present",
+    "quote": "Solo-engineer pace at a startup — propose, build, ship, iterate crazy fast across the whole stack: data pipelines, agents, video generation, all the way to the UI students actually touch.",
+    "quote_vi": "Tốc độ kỹ sư solo ở startup — propose, build, ship, iterate điên cuồng trên toàn bộ stack: data pipeline, agent, video generation, cho đến cái UI mà học sinh thực sự chạm vào.",
     "missions": [
-      "Architected a document-parsing pipeline to replace manual labeling, converting unstructured educational content into structured Q&A data, which achieved ~83% conversion rate, accurately populating 10k+ questions.",
-      "Developed a video generation pipeline using LangGraph + Flutter that transforms students' graded performance into personalised, step-by-step explainer videos to address student's misconceptions.",
-      "Defined SLOs and cost projections for GenAI workloads; owned entire document-parsing features roadmap to raise extraction quality and extend coverage across subjects, curricula, languages, and modalities."
+      "Replaced manual content labeling with an agentic document-parsing pipeline — a stronger verification logic that generalises across edge cases instead of memorising shapes, hitting >99% precision (effectively zero false positives) and still converting ~73% of unstructured educational content into clean structured Q&A data — 50k+ questions populated.",
+      "Designed the structured-output schema and the model emitter that powers it — each parsed item carries enough downstream signal (teaching cues, learning concepts, hidden analytical tags, and a few other things the product is not ready to talk about yet) to feed several internal product surfaces at once, without leaking how it was assembled.",
+      "Built an agentic research + crawling system that ingests curriculum content from across the web with provenance-grade source verification: planner-driven multi-hop search, syllabus-mapping agents that align fragments back to the curriculum tree, and citation tracking — so every generated explanation can be traced to a trusted source.",
+      "Built the observability + orchestration backbone for our GenAI platform: end-to-end traces, cost dashboards, schedulers for long-running jobs, and a single place to discover and operate every model/tool/workflow shipping across the company.",
+      "Worn every hat the work needed: solo engineer owning a feature end-to-end, peer co-working with founders on roadmap, and stepping into product + lightweight design when no one else was free. Comfortable in any mode — what matters is the thing shipping well."
     ],
-    "skills": ["LangGraph", "LLMs", "GCP", "Flutter", "Weaviate"],
-    "image": "/images/experience/growtrics_v2.png",
-    "logo": "/images/GrowtricsAI_logo.jpg",
+    "missions_vi": [
+      "Thay thế việc gán nhãn nội dung thủ công bằng pipeline document-parsing agentic — logic xác minh mạnh hơn theo hướng generalize qua mọi edge case thay vì học thuộc hình dạng, đạt độ chính xác >99% (gần như không có false positive) và vẫn chuyển đổi được ~73% nội dung giáo dục phi cấu trúc thành dữ liệu Q&A có cấu trúc — 50k+ câu hỏi đã populate.",
+      "Thiết kế schema output có cấu trúc và lớp model emit ra nó — mỗi item parse ra đều mang đủ tín hiệu cho downstream (cues dạy học, concept học tập, các tag phân tích ẩn, và vài thứ khác mà sản phẩm chưa sẵn sàng nói) để đồng thời feed cho nhiều product surface nội bộ, mà không lộ phần raw của cách nó được lắp ráp.",
+      "Xây dựng hệ thống agentic research + crawling thu thập nội dung chương trình học từ khắp web với xác minh nguồn cấp độ provenance: multi-hop search điều phối bởi planner, các agent mapping giáo trình để căn chỉnh từng mảnh về curriculum tree, và citation tracking — để mỗi giải thích được sinh ra đều truy ngược về nguồn đáng tin.",
+      "Xây dựng backbone observability + orchestration cho GenAI platform: trace end-to-end, dashboard chi phí, scheduler cho các job chạy lâu, và một nơi duy nhất để khám phá và vận hành mọi model/tool/workflow đang chạy trong công ty.",
+      "Đội đủ thứ mũ mà công việc cần: kỹ sư solo sở hữu một feature end-to-end, co-work cùng founders cho roadmap, và bước sang vai PM + design nhẹ khi không ai rảnh. Thoải mái ở bất cứ mode nào — quan trọng là sản phẩm ship được tử tế."
+    ],
+    "skills": [
+      "LangGraph",
+      "LLMs",
+      "GCP",
+      "Flutter",
+      "Weaviate"
+    ],
+    "metrics": [
+      {
+        "value": ">99%",
+        "label": "precision",
+        "label_vi": "độ chính xác",
+        "hint": "effectively zero false positives",
+        "hint_vi": "gần như không có false positive"
+      },
+      {
+        "value": "~73%",
+        "label": "conversion rate",
+        "label_vi": "tỷ lệ chuyển đổi",
+        "hint": "unstructured → structured Q&A",
+        "hint_vi": "phi cấu trúc → Q&A có cấu trúc"
+      },
+      {
+        "value": "50k+",
+        "label": "questions populated",
+        "label_vi": "câu hỏi đã populate",
+        "hint": "across subjects + curricula",
+        "hint_vi": "trải nhiều môn + chương trình"
+      },
+      {
+        "value": "5",
+        "label": "engineering modes",
+        "label_vi": "vai trò đảm nhận",
+        "hint": "solo · team · PM · design · ops",
+        "hint_vi": "solo · team · PM · design · ops"
+      }
+    ],
+    "image": "/images/experience/growtrics_duy.png",
+    "logo": "/images/experience/GrowtricsAI_logo.jpg",
     "checksum": "0x3E4"
   },
   {
     "id": "002",
-    "slug": "nvidia-research",
-    "title": "Generative AI Researcher Intern",
-    "company": "SIT x NVIDIA AI Center",
-    "dates": "Dec 2024 – Sep 2025",
-    "quote": "Was shocked to find our original engine would take centuries to generate the dataset we needed, but we pulled through... An awesome virgin experience to multimodal AI research!",
+    "slug": "gmo-runsystem",
+    "title": "AI Engineer",
+    "title_vi": "AI Engineer",
+    "company": "GMO-Z.com RUNSYSTEM",
+    "dates": "Aug 2024 – Nov 2025",
+    "quote": "From 94% to 98% accuracy and ~40% lower latency — every millisecond counts when banks, hospitals, and government agencies depend on your OCR.",
+    "quote_vi": "Từ 94% lên 98% độ chính xác và giảm ~40% latency — mỗi millisecond đều tính khi ngân hàng, bệnh viện, và cơ quan nhà nước phụ thuộc vào OCR của bạn.",
     "missions": [
-      "[MANUSCRIPT IN PREPARATION] SynDORBench: Benchmarking Human Detection and Action Recognition with DORI-Calibrated Distances.",
-      "Engineered a scalable synthetic-data engine using open-source datasets (SMPL-X, AMASS, and BABEL) and implemented an auto-labeling mechanism (pose/bbox/mask), which accelerates CV/VLM data collection.",
-      "Developed a DORI-aligned surveillance dataset (200k+ images & 630k+ QA pairs) with controlled context parameters to enable robust benchmarking of presence & action recognition models.",
-      "Built a unified evaluation framework for human-presence & action recognition, with Hydra configs and Docker/CUDA to benchmark YOLO models against compact LVLMs."
+      "Built and deployed a multilingual OCR platform (Vietnamese/Japanese) with an iterative data pipeline (continuous enrichment loop) for dataset expansion, model training, and evaluation; production deployment on cloud and mobile via Triton Inference Server and TensorRT/ONNX, boosting overall accuracy from 94% → 98% and significantly increasing serving throughput.",
+      "Delivered end-to-end computer vision pipelines (YOLO, RT-DETR, Segment Anything) for CAD/technical-drawing understanding, object measurement, license plate recognition, and structured document extraction — at production-grade accuracy across diverse real-world image types.",
+      "Orchestrated a production document-parsing pipeline (FastAPI, PostgreSQL, Docker, S3) producing Markdown/HTML/JSON full-content structures and schema-based extracts using cloud LLM APIs and in-house VLMs, with normalized outputs ready for downstream RAG.",
+      "Implemented an agent-driven Text-to-SQL workflow for stock analysis: semantic table/row search, metadata enrichment, expert few-shot templates, and LLM self-correction/cross-reflection to validate and normalize tabular outputs.",
+      "Optimized models for cloud and edge through distillation, quantization, and efficient pre/postprocessing; introduced dynamic resizing and autoregressive decoder loop management that reduced OCR inference latency by ~40%."
     ],
-    "skills": ["PyTorch", "CUDA", "Blender", "LVLMs", "Multimodal"],
-    "image": "/images/experience/sit_nvidia_v2.png",
-    "logo": "/images/Nvidia_logo.jpg",
-    "checksum": "0x5F5"
+    "customers": [
+      {
+        "name": "Shinhan Bank",
+        "region": "VN",
+        "kind": "bank"
+      },
+      {
+        "name": "LPBank",
+        "region": "VN",
+        "kind": "bank"
+      },
+      {
+        "name": "ABBANK",
+        "region": "VN",
+        "kind": "bank"
+      },
+      {
+        "name": "Maybank",
+        "region": "VN",
+        "kind": "bank"
+      },
+      {
+        "name": "VCB (Vietcombank)",
+        "region": "VN",
+        "kind": "bank"
+      },
+      {
+        "name": "MCredit",
+        "region": "VN",
+        "kind": "fintech"
+      },
+      {
+        "name": "CITEK",
+        "region": "VN",
+        "kind": "enterprise"
+      },
+      {
+        "name": "HCMC DOST",
+        "region": "VN",
+        "kind": "gov"
+      },
+      {
+        "name": "Wifeed",
+        "region": "VN",
+        "kind": "enterprise"
+      },
+      {
+        "name": "RKKCS",
+        "region": "JP",
+        "kind": "enterprise"
+      },
+      {
+        "name": "YAMAZEN",
+        "region": "JP",
+        "kind": "enterprise"
+      },
+      {
+        "name": "SRA",
+        "region": "JP",
+        "kind": "enterprise"
+      }
+    ],
+    "missions_vi": [
+      "Xây dựng và deploy platform OCR đa ngôn ngữ (Tiếng Việt/Tiếng Nhật) với data pipeline lặp liên tục (continuous enrichment loop) cho việc mở rộng dataset, train và evaluate model; deploy production trên cloud và mobile qua Triton Inference Server và TensorRT/ONNX, nâng độ chính xác tổng thể từ 94% → 98% và tăng đáng kể throughput phục vụ.",
+      "Phát triển các pipeline computer vision end-to-end (YOLO, RT-DETR, Segment Anything) cho hiểu bản vẽ CAD/kỹ thuật, đo đạc đối tượng, nhận diện biển số xe, và trích xuất tài liệu có cấu trúc — đạt độ chính xác production-grade trên nhiều loại ảnh thực tế đa dạng.",
+      "Xây dựng pipeline document-parsing production (FastAPI, PostgreSQL, Docker, S3) sinh ra cấu trúc toàn nội dung Markdown/HTML/JSON và trích xuất theo schema sử dụng cloud LLM API và VLM nội bộ, với output đã chuẩn hóa sẵn sàng cho downstream RAG.",
+      "Triển khai workflow Text-to-SQL hướng agent cho phân tích chứng khoán: semantic search bảng/hàng, làm giàu metadata, template few-shot từ chuyên gia, và self-correction/cross-reflection của LLM để validate và chuẩn hóa output dạng bảng.",
+      "Tối ưu model cho cloud và edge thông qua distillation, quantization, và pre/postprocessing hiệu quả; giới thiệu dynamic resizing và quản lý decoder loop autoregressive, giảm latency OCR inference ~40%."
+    ],
+    "skills": [
+      "PyTorch",
+      "Triton",
+      "TensorRT",
+      "FastAPI",
+      "LangChain"
+    ],
+    "metrics": [
+      {
+        "value": "94 → 98%",
+        "label": "OCR accuracy",
+        "label_vi": "độ chính xác OCR",
+        "hint": "multilingual VN/JP, production",
+        "hint_vi": "đa ngôn ngữ VN/JP, production"
+      },
+      {
+        "value": "−40%",
+        "label": "inference latency",
+        "label_vi": "latency inference",
+        "hint": "via dynamic resize + decoder loop",
+        "hint_vi": "qua dynamic resize + decoder loop"
+      },
+      {
+        "value": "12",
+        "label": "enterprise customers",
+        "label_vi": "khách hàng doanh nghiệp",
+        "hint": "across VN + JP, banks + gov",
+        "hint_vi": "VN + JP, ngân hàng + chính phủ"
+      }
+    ],
+    "image": "/images/experience/gmo-runsystem@512.png",
+    "logo": null,
+    "checksum": "0x9F8"
   },
   {
     "id": "003",
-    "slug": "outsight",
-    "title": "Algorithm Engineer Intern",
-    "company": "Outsight",
-    "dates": "Feb 2024 – Jul 2024",
-    "quote": "Easily the highlight of my undergraduate journey, got to work in a foreign country with awesome people and some seriously cool technology!",
+    "slug": "smartpay",
+    "title": "AI Engineer",
+    "title_vi": "AI Engineer",
+    "company": "SmartPay JSC",
+    "dates": "Mar 2024 – Aug 2024",
+    "quote": "First taste of fintech: real-time fraud detection that retrains itself, and an LLM that reads contracts so the ops team doesn't have to.",
+    "quote_vi": "Lần đầu chạm fintech: fraud detection real-time tự retrain, và LLM đọc hợp đồng để team ops khỏi phải đọc.",
     "missions": [
-      "Improved perception validation accuracy by 67% in large-scale environments through high-fidelity People Flow Monitoring simulations with realistic crowd dynamics and stochastic destination assignments (UE4/CARLA).",
-      "Supported pre-deployment validation of over 300 LiDARs across multiple terminals at a major SEA airport.",
-      "Cut simulation setup time by over 90% via an end-to-end scenario tooling suite for scenario configuration, point-cloud dataset generation, and fixed-seed regression checks, accelerating iteration velocity for algorithm team."
+      "Developed an end-to-end real-time fraud detection pipeline with automated feature engineering and retraining via Apache Airflow, reducing manual maintenance and ensuring consistent model performance.",
+      "Shipped an LLM-driven workflow that automatically interprets merchant contracts and configures the company's internal fee-setting system, reducing manual effort for the business operations team."
     ],
-    "skills": ["Python", "UE4", "CARLA", "LiDAR", "Simulations"],
-    "image": "/images/experience/outsight_v2.png",
-    "logo": "/images/Outsight_logo.jpg",
-    "checksum": "0x377"
+    "missions_vi": [
+      "Phát triển pipeline fraud detection real-time end-to-end với feature engineering tự động và retrain qua Apache Airflow, giảm bảo trì thủ công và đảm bảo hiệu suất model ổn định.",
+      "Ship workflow LLM-driven tự động diễn giải hợp đồng đối tác và cấu hình hệ thống thiết lập phí nội bộ của công ty, giảm đáng kể công việc thủ công cho team business operations."
+    ],
+    "skills": [
+      "Python",
+      "Airflow",
+      "LLMs",
+      "Fraud Detection",
+      "MLOps"
+    ],
+    "image": "/images/experience/smartpay@512.png",
+    "logo": null,
+    "checksum": "0x7B2"
   },
   {
     "id": "004",
-    "slug": "dso-cv",
-    "title": "Computer Vision Engineer Intern",
-    "company": "DSO National Laboratories",
-    "dates": "May 2023 – Aug 2023",
-    "quote": "Experienced the pain of working with a new symbolic computation library with very few documentation. Great learning curve and definitely not for the weak!",
+    "slug": "soict-hackathon",
+    "title": "3rd Prize – Vietnamese Handwritten Recognition",
+    "title_vi": "3rd Prize – Vietnamese Handwritten Recognition",
+    "company": "Naver × SoICT Hackathon 2023",
+    "dates": "2023",
+    "quote": "Vietnamese handwriting is brutal — diacritics, ligatures, every writer's quirks. Top-3 felt like a small victory against entropy.",
+    "quote_vi": "Chữ viết tay Tiếng Việt thật sự khắc nghiệt — dấu thanh, nét nối, cái quirk riêng của từng người viết. Top 3 cảm giác như một chiến thắng nhỏ trước sự hỗn loạn.",
     "missions": [
-      "Increased drone navigation accuracy by 20% in low-light, high-speed conditions by developing an Event-based Stereo Visual Odometry (ESVO) system using C++.",
-      "Achieved 5x latency reduction in state estimation (80%↓) by re-implementing non-linear solvers with SymForce symbolic computations, enabling real-time control feedback in drone navigation systems."
+      "Placed 3rd in the Naver Vietnamese Handwritten Recognition track at the SoICT Hackathon 2023.",
+      "Designed a recognition pipeline tuned for the heavy diacritics and stylistic variance unique to handwritten Vietnamese."
     ],
-    "skills": ["C++", "3D CV", "Event Cam", "SymForce", "Robotics"],
-    "image": "/images/experience/dso_drone_v2.png",
-    "logo": "/images/DSO_logo.jpg",
-    "checksum": "0x24C"
+    "missions_vi": [
+      "Đạt giải Ba ở track Nhận dạng chữ viết tay Tiếng Việt của Naver tại SoICT Hackathon 2023.",
+      "Thiết kế pipeline nhận dạng được tinh chỉnh cho dấu thanh dày đặc và sự biến thể phong cách đặc trưng của chữ viết tay Tiếng Việt."
+    ],
+    "skills": [
+      "PyTorch",
+      "OCR",
+      "Handwriting",
+      "Vietnamese"
+    ],
+    "image": "/images/experience/soict-hackathon@512.png",
+    "logo": null,
+    "checksum": "0x4A1",
+    "insight": "Placing 3rd in the Naver Vietnamese Handwritten Recognition track sounds modest until you understand the problem: Vietnamese diacritics stack up to three marks on a single base character, and every writer invents their own shorthand for them. The overnight calibration runs — iterating augmentation pipelines while the fluorescent lights of the Hanoi University lab buzzed overhead — taught me that the gap between 94% and 98% accuracy is where real OCR engineering lives. That competition is still the mental model I reach for every time I encounter a noisy, low-resource recognition task at GMO.",
+    "insight_vi": "Đạt top 3 ở track Nhận dạng chữ viết tay Tiếng Việt của Naver nghe có vẻ khiêm tốn — cho đến khi bạn thực sự nhìn vào bài toán: tiếng Việt có thể chồng tới ba dấu lên một ký tự gốc duy nhất, và mỗi người viết lại tự phát minh ra cách viết tắt riêng của mình. Những đêm chạy calibration xuyên đêm — vừa lặp pipeline augmentation vừa nghe tiếng đèn huỳnh quang của phòng lab Bách Khoa Hà Nội vo ve — dạy tôi rằng khoảng cách giữa 94% và 98% độ chính xác chính là nơi OCR engineering thực sự bắt đầu. Cuộc thi đó vẫn là mô hình tư duy tôi lấy ra mỗi khi đối mặt với một bài toán nhận dạng nhiễu, ít dữ liệu tại GMO — cái đêm huỳnh quang ấy chưa bao giờ thực sự kết thúc.",
+    "gallery": [
+      {
+        "src": "/images/experience/soict-photo.png",
+        "caption": "Onsite at the SoICT Hackathon 2023 final round (Hanoi University of Science and Technology). The Naver track was the longest, fluorescent kind of night — espresso cups, half a dozen GPUs, and Vietnamese diacritics that absolutely refused to behave.",
+        "caption_vi": "Trong vòng chung kết SoICT Hackathon 2023 (ĐH Bách Khoa Hà Nội). Track Naver là một đêm dài kiểu ánh đèn huỳnh quang — cốc espresso, dăm con GPU, và dấu thanh tiếng Việt nhất định không chịu cư xử.",
+        "alt": "Le Van Duy at SoICT Hackathon 2023 final round, on a laptop in a low-lit room"
+      }
+    ],
+    "links": [
+      {
+        "label": "Hackathon official page",
+        "label_vi": "Trang chính thức cuộc thi",
+        "url": "https://soict.hust.edu.vn/vong-chung-ket-cuoc-thi-soict-hackathon-2023.html",
+        "kind": "official",
+        "preview": "/images/experience/soict-official-preview.jpg"
+      },
+      {
+        "label": "LinkedIn honor",
+        "label_vi": "Honor trên LinkedIn",
+        "url": "https://www.linkedin.com/in/leduy-it/overlay/Honor/490253241/treasury/?profileId=ACoAADxF6DMBFOxczGqKsgssyDCfuo8zJJ_2Qi8",
+        "kind": "linkedin"
+      }
+    ]
   },
   {
     "id": "005",
-    "slug": "bumblebee",
-    "title": "Student Trainee",
-    "company": "Bumblebee Autonomous Systems",
-    "dates": "Aug 2022 – Jan 2023",
-    "quote": "Working underwater taught me that failure modes are everywhere. When GPS doesn't work, you learn to rely on sound. When sensors fail, you build redundancy. Resilience isn't optional.",
+    "slug": "hcmc-dost-award",
+    "title": "Outstanding Innovation & Startup Project 2025",
+    "title_vi": "Outstanding Innovation & Startup Project 2025",
+    "company": "HCMC Department of Science & Technology",
+    "dates": "2025",
+    "quote": "A fintech platform with reinforcement-learning trading agents — recognised for putting agentic AI in front of real investor decisions, not just in a paper.",
+    "quote_vi": "Một nền tảng fintech với agent giao dịch reinforcement-learning — được ghi nhận vì đưa agentic AI vào quyết định thật của nhà đầu tư, không phải chỉ trong paper.",
     "missions": [
-      "Developed and tuned a three-hydrophone acoustic-localization system, boosting mission navigation accuracy by 40%.",
-      "Contributed across perception, hardware integration, and signal-processing tasks in the AUV development lifecycle."
+      "Core contributor to a project recognised as one of the Outstanding Innovation & Startup Projects 2025 by the Ho Chi Minh City Department of Science & Technology.",
+      "The recognised project is a fintech platform: reinforcement-learning trading agents that learn market dynamics in simulation, then surface trade signals to retail investors with confidence + risk context. Built the agent training loop, the live signal pipeline, and the explainability layer that turns agent actions into language a non-quant can act on."
     ],
-    "skills": ["DSP", "Robotics", "AUV", "Acoustics"],
-    "image": "/images/experience/bumblebee_v2.png",
-    "logo": "/images/Bumblebee_logo.jpg",
-    "checksum": "0x3A3"
+    "missions_vi": [
+      "Đóng góp cốt lõi cho dự án được công nhận là một trong những Dự án Đổi mới & Khởi nghiệp Tiêu biểu 2025 của Sở Khoa học và Công nghệ TP. Hồ Chí Minh.",
+      "Dự án được vinh danh là một nền tảng fintech: các agent giao dịch reinforcement-learning học động lực thị trường trong simulation, rồi đưa ra tín hiệu giao dịch cho nhà đầu tư cá nhân kèm độ tự tin + bối cảnh rủi ro. Xây dựng vòng lặp training agent, pipeline tín hiệu real-time, và lớp explainability biến hành động của agent thành ngôn ngữ mà nhà đầu tư không-quant có thể hành động."
+    ],
+    "skills": [
+      "RL",
+      "Agents",
+      "Fintech",
+      "Signals",
+      "Trading"
+    ],
+    "image": "/images/experience/hcmc-dost-award@512.png",
+    "logo": null,
+    "checksum": "0x6C3"
   },
   {
     "id": "006",
-    "slug": "dso-rf",
-    "title": "Radio Frequency Engineer Intern",
-    "company": "DSO National Laboratories",
-    "dates": "Oct 2019 – Dec 2019",
-    "quote": "Probably the only person to say that I have built a drone jammer using a repurposed luncheon meat can!",
-    "missions": [
-      "Investigated various electronic jamming techniques ranging from dynamic barrage to swept frequency jamming.",
-      "Spearheaded the design of a novel antenna using a repurposed luncheon meat can as the waveguide to effectively propagate the jamming signals.",
-      "Leveraged state-of-the-art ADALM Pluto Software Defined Radios (SDRs) to generate powerful, precision-tuned jamming signals, ensuring optimal efficacy in disabling drone control links.",
-      "Successfully disrupted the control link between a Parrot Mambo drone and its controller (phone), validating the viability of our solution."
-    ],
-    "skills": ["Python", "RF", "SDR", "DSP"],
-    "image": "/images/experience/dso_drone_jammer_v2.png",
-    "logo": "/images/DSO_logo.jpg",
-    "checksum": "0x24B"
-  },
-  {
-    "id": "007",
-    "slug": "dso-research",
-    "title": "Student Researcher",
-    "company": "DSO National Laboratories",
-    "dates": "Jan 2018 – Dec 2018",
-    "quote": "Took up this research opportunity as a high schooler and managed to find a mentor that reignited my interest in learning and programming!",
-    "missions": [
-      "Investigated the approach for the characterisation, calibration, and compensation of channel mismatches in a Quadrature Modulated Waveform Generator (QMWG).",
-      "Error analysis was done using the Figure of Merit (FoM) as the performance metric.",
-      "Appropriate calibration and compensation were implemented and then tested using Python to confirm the effectiveness."
-    ],
-    "skills": ["Python", "DSP", "RF", "Research"],
-    "image": "/images/experience/dso_student_research_v2.png",
-    "logo": "/images/DSO_logo.jpg",
-    "checksum": "0x4C0"
-  },
-  {
-    "id": "008",
     "slug": "whats-next",
     "title": "What's Next?",
+    "title_vi": "What's Next?",
     "company": "???",
     "dates": "",
     "quote": "The next chapter is unwritten. But the story so far? Worth every line.",
+    "quote_vi": "Chương tiếp theo vẫn chưa được viết. Nhưng câu chuyện đến giờ? Mỗi dòng đều xứng đáng.",
     "missions": [],
+    "missions_vi": [],
     "skills": [],
     "image": "",
     "logo": null,
