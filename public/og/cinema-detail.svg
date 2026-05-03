@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0f1c28"/>
+      <stop offset="100%" stop-color="#0a1219"/>
+    </radialGradient>
+    <radialGradient id="cyanGlow" cx="0%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#66fcf1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#66fcf1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="amberGlow" cx="100%" cy="100%" r="45%">
+      <stop offset="0%" stop-color="#ff9933" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ff9933" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+  <rect width="1200" height="630" fill="url(#cyanGlow)"/>
+  <rect width="1200" height="630" fill="url(#amberGlow)"/>
+
+  <!-- Brand mark -->
+  <text x="48" y="60" font-family="monospace, system-ui" font-size="22" fill="#66fcf1" font-weight="700" letter-spacing="1">michael.py_</text>
+  <line x1="48" y1="72" x2="160" y2="72" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- Single large movie poster (generic detail view) -->
+  <rect x="454" y="90" width="292" height="268" rx="4" fill="#0a1020" stroke="#66fcf1" stroke-width="2" stroke-opacity="0.6" shape-rendering="crispEdges"/>
+
+  <!-- Film strip notches top -->
+  <rect x="464" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="484" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="504" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="664" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="684" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="704" y="90" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+
+  <!-- Film strip notches bottom -->
+  <rect x="464" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="484" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="504" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="664" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="684" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="704" y="348" width="14" height="10" rx="1" fill="#0a1219" shape-rendering="crispEdges"/>
+
+  <!-- Poster image area -->
+  <rect x="462" y="103" width="276" height="244" fill="#060d1a"/>
+
+  <!-- Abstract cinematic visual inside poster -->
+  <!-- Lens flare / projector beam -->
+  <line x1="600" y1="103" x2="462" y2="347" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15"/>
+  <line x1="600" y1="103" x2="738" y2="347" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15"/>
+  <!-- Widescreen crop bars -->
+  <rect x="462" y="103" width="276" height="22" fill="#0a1219" fill-opacity="0.7" shape-rendering="crispEdges"/>
+  <rect x="462" y="325" width="276" height="22" fill="#0a1219" fill-opacity="0.7" shape-rendering="crispEdges"/>
+  <!-- Filmic scene placeholder: horizon line + glow -->
+  <line x1="462" y1="224" x2="738" y2="224" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.2"/>
+  <ellipse cx="600" cy="224" rx="80" ry="30" fill="#ff9933" fill-opacity="0.08"/>
+  <ellipse cx="600" cy="224" rx="40" ry="14" fill="#ff9933" fill-opacity="0.12"/>
+  <!-- Stars -->
+  <circle cx="490" cy="160" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="530" cy="140" r="1" fill="#ffffff" opacity="0.5"/>
+  <circle cx="580" cy="155" r="1.5" fill="#66fcf1" opacity="0.5"/>
+  <circle cx="640" cy="145" r="1" fill="#ffffff" opacity="0.4"/>
+  <circle cx="690" cy="165" r="1.5" fill="#ffffff" opacity="0.6"/>
+  <circle cx="710" cy="148" r="1" fill="#66fcf1" opacity="0.4"/>
+  <!-- Play button -->
+  <polygon points="585,210 585,238 613,224" fill="#66fcf1" fill-opacity="0.5"/>
+  <!-- Film title placeholder -->
+  <text x="600" y="290" font-family="monospace, system-ui" font-size="15" font-weight="700" fill="#66fcf1" text-anchor="middle" letter-spacing="2" opacity="0.8">[ FILM TITLE ]</text>
+  <line x1="510" y1="300" x2="690" y2="300" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="600" y="316" font-family="monospace, system-ui" font-size="10" fill="#ff9933" text-anchor="middle" letter-spacing="2" opacity="0.6">DIRECTOR</text>
+
+  <!-- Side annotation lines -->
+  <line x1="200" y1="224" x2="450" y2="224" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15" stroke-dasharray="4,4"/>
+  <line x1="750" y1="224" x2="1000" y2="224" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15" stroke-dasharray="4,4"/>
+  <circle cx="200" cy="224" r="3" fill="#66fcf1" fill-opacity="0.3"/>
+  <circle cx="1000" cy="224" r="3" fill="#66fcf1" fill-opacity="0.3"/>
+
+  <!-- Separator -->
+  <line x1="40" y1="395" x2="1160" y2="395" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15"/>
+
+  <!-- Title -->
+  <text x="600" y="448" font-family="system-ui, sans-serif" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="-0.5">leduy.py / cinema</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="498" font-family="monospace, system-ui" font-size="17" fill="#ff9933" text-anchor="middle" letter-spacing="1" opacity="0.85">Multi-angle notes on a film I keep returning to</text>
+
+  <!-- Bottom-right slug -->
+  <text x="1152" y="606" font-family="monospace, system-ui" font-size="15" fill="#66fcf1" text-anchor="end" opacity="0.65">leduy.py / cinema</text>
+</svg>

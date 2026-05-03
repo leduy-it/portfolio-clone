@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="cg" cx="0%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#66fcf1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#66fcf1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ag" cx="100%" cy="100%" r="45%">
+      <stop offset="0%" stop-color="#ff9933" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ff9933" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0a1219"/>
+  <rect width="1200" height="630" fill="url(#cg)"/>
+  <rect width="1200" height="630" fill="url(#ag)"/>
+
+  <!-- Brand mark -->
+  <text x="48" y="60" font-family="monospace, system-ui" font-size="22" fill="#66fcf1" font-weight="700" letter-spacing="1">michael.py_</text>
+  <line x1="48" y1="72" x2="160" y2="72" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- 4 mini movie-poster placeholders: x=188, 388, 588, 788 -->
+  <!-- Film strip notch rows reused via shared y positions -->
+
+  <!-- Poster 1: Dune -->
+  <rect x="188" y="110" width="160" height="240" rx="3" fill="#0a1e2e" stroke="#66fcf1" stroke-width="1.5" stroke-opacity="0.7" shape-rendering="crispEdges"/>
+  <rect x="196" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="212" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="332" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="196" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="332" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="196" y="121" width="144" height="220" fill="#0d2535"/>
+  <ellipse cx="268" cy="295" rx="70" ry="25" fill="#ff9933" fill-opacity="0.22"/>
+  <text x="268" y="205" font-family="monospace, system-ui" font-size="22" font-weight="700" fill="#66fcf1" text-anchor="middle">DUNE</text>
+  <text x="268" y="224" font-family="monospace, system-ui" font-size="9" fill="#ff9933" text-anchor="middle" letter-spacing="2" opacity="0.8">VILLENEUVE</text>
+
+  <!-- Poster 2: Oppenheimer -->
+  <rect x="388" y="110" width="160" height="240" rx="3" fill="#1a0a0a" stroke="#ff9933" stroke-width="1.5" stroke-opacity="0.7" shape-rendering="crispEdges"/>
+  <rect x="396" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="412" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="532" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="396" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="532" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="396" y="121" width="144" height="220" fill="#150808"/>
+  <circle cx="468" cy="255" r="34" fill="#ff9933" fill-opacity="0.14"/>
+  <circle cx="468" cy="255" r="18" fill="#ff9933" fill-opacity="0.2"/>
+  <circle cx="468" cy="255" r="7" fill="#ff9933" fill-opacity="0.5"/>
+  <text x="468" y="192" font-family="monospace, system-ui" font-size="13" font-weight="700" fill="#ff9933" text-anchor="middle" letter-spacing="1">OPPENHEIMER</text>
+  <text x="468" y="210" font-family="monospace, system-ui" font-size="9" fill="#ff9933" text-anchor="middle" letter-spacing="2" opacity="0.7">NOLAN</text>
+
+  <!-- Poster 3: Interstellar -->
+  <rect x="588" y="110" width="160" height="240" rx="3" fill="#080a14" stroke="#66fcf1" stroke-width="1.5" stroke-opacity="0.7" shape-rendering="crispEdges"/>
+  <rect x="596" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="612" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="732" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="596" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="732" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="596" y="121" width="144" height="220" fill="#06080f"/>
+  <ellipse cx="668" cy="248" rx="40" ry="16" fill="none" stroke="#66fcf1" stroke-width="2" stroke-opacity="0.6"/>
+  <circle cx="668" cy="248" r="10" fill="#66fcf1" fill-opacity="0.1"/>
+  <text x="668" y="188" font-family="monospace, system-ui" font-size="14" font-weight="700" fill="#66fcf1" text-anchor="middle" letter-spacing="1">INTERSTELLAR</text>
+  <text x="668" y="207" font-family="monospace, system-ui" font-size="9" fill="#66fcf1" text-anchor="middle" letter-spacing="2" opacity="0.7">NOLAN</text>
+
+  <!-- Poster 4: Blade Runner 2049 -->
+  <rect x="788" y="110" width="160" height="240" rx="3" fill="#0a1020" stroke="#66fcf1" stroke-width="1.5" stroke-opacity="0.7" shape-rendering="crispEdges"/>
+  <rect x="796" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="812" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="932" y="110" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="796" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="932" y="342" width="10" height="8" fill="#0a1219" shape-rendering="crispEdges"/>
+  <rect x="796" y="121" width="144" height="220" fill="#080e1a"/>
+  <rect x="806" y="272" width="14" height="68" fill="#66fcf1" fill-opacity="0.28" shape-rendering="crispEdges"/>
+  <rect x="826" y="258" width="18" height="82" fill="#66fcf1" fill-opacity="0.32" shape-rendering="crispEdges"/>
+  <rect x="850" y="268" width="12" height="72" fill="#ff9933" fill-opacity="0.22" shape-rendering="crispEdges"/>
+  <rect x="868" y="252" width="16" height="88" fill="#66fcf1" fill-opacity="0.28" shape-rendering="crispEdges"/>
+  <rect x="890" y="262" width="14" height="78" fill="#ff9933" fill-opacity="0.28" shape-rendering="crispEdges"/>
+  <rect x="906" y="268" width="12" height="72" fill="#66fcf1" fill-opacity="0.22" shape-rendering="crispEdges"/>
+  <rect x="796" y="235" width="144" height="45" fill="#ff9933" fill-opacity="0.06"/>
+  <text x="868" y="180" font-family="monospace, system-ui" font-size="13" font-weight="700" fill="#66fcf1" text-anchor="middle" letter-spacing="0.5">BLADE RUNNER</text>
+  <text x="868" y="198" font-family="monospace, system-ui" font-size="18" font-weight="700" fill="#ff9933" text-anchor="middle">2049</text>
+  <text x="868" y="217" font-family="monospace, system-ui" font-size="9" fill="#66fcf1" text-anchor="middle" letter-spacing="2" opacity="0.7">VILLENEUVE</text>
+
+  <!-- Separator -->
+  <line x1="40" y1="390" x2="1160" y2="390" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15"/>
+
+  <!-- Title -->
+  <text x="600" y="445" font-family="system-ui, sans-serif" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="-0.5">Cinema — films I keep returning to</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="494" font-family="monospace, system-ui" font-size="16" fill="#ff9933" text-anchor="middle" letter-spacing="1.5" opacity="0.85">Dune · Oppenheimer · Interstellar · Blade Runner 2049</text>
+
+  <!-- Bottom-right slug -->
+  <text x="1152" y="606" font-family="monospace, system-ui" font-size="15" fill="#66fcf1" text-anchor="end" opacity="0.65">leduy.py / cinema</text>
+</svg>

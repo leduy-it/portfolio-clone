@@ -1,7 +1,12 @@
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
+import { LocaleProvider } from '@/lib/i18n'
 import { Header } from '@/components/header'
+import { CursorGlow, PageTransition } from '@/components/motion'
+import { VisitorTracker } from '@/components/visitor-tracker'
+import { MysteryBox } from '@/components/mystery-box'
+import { SecretHint } from '@/components/secret-hint'
 import './globals.css'
 
 const jetbrainsMono = JetBrains_Mono({
@@ -9,10 +14,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 })
 
-export const metadata: Metadata = {
-  title: 'Duyle.js',
-  description: 'Personal portfolio of Duy Le — software engineer.',
-}
+import { buildMetadataOg } from '@/lib/og-meta'
+
+export const metadata: Metadata = buildMetadataOg({
+  title: 'michael.py — AI Engineer building at the OCR + agents intersection',
+  description: 'Personal portfolio of Duy Le — AI Engineer working across OCR, Document AI, and LLM agents in Ho Chi Minh City.',
+  route: 'home',
+})
 
 export default function RootLayout({
   children,
@@ -23,10 +31,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${jetbrainsMono.variable} font-mono antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <LocaleProvider>
+            <CursorGlow />
+            <Header />
+            <main className="min-h-screen">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <VisitorTracker />
+            <SecretHint />
+            <MysteryBox />
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

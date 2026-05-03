@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0f1c28"/>
+      <stop offset="100%" stop-color="#0a1219"/>
+    </radialGradient>
+    <radialGradient id="cyanGlow" cx="0%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#66fcf1" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#66fcf1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="amberGlow" cx="100%" cy="100%" r="45%">
+      <stop offset="0%" stop-color="#ff9933" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ff9933" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGlow)"/>
+  <rect width="1200" height="630" fill="url(#cyanGlow)"/>
+  <rect width="1200" height="630" fill="url(#amberGlow)"/>
+
+  <!-- Brand mark -->
+  <text x="48" y="60" font-family="monospace, system-ui" font-size="22" fill="#66fcf1" font-weight="700" letter-spacing="1">michael.py_</text>
+  <line x1="48" y1="72" x2="160" y2="72" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- Wireframe geometry: overlapping triangle strokes (Three.js scene simulation) -->
+  <!-- Large outer triangle -->
+  <polygon points="600,80 200,370 1000,370" fill="none" stroke="#66fcf1" stroke-width="1.5" stroke-opacity="0.4"/>
+  <!-- Second rotated triangle -->
+  <polygon points="600,370 260,120 940,120" fill="none" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.25"/>
+  <!-- Third inner triangle -->
+  <polygon points="600,140 360,330 840,330" fill="none" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.2"/>
+  <!-- Fourth smaller -->
+  <polygon points="600,180 420,300 780,300" fill="none" stroke="#66fcf1" stroke-width="0.8" stroke-opacity="0.15"/>
+
+  <!-- Amber accent dots at triangle vertices -->
+  <circle cx="600" cy="80" r="5" fill="#ff9933" opacity="0.8"/>
+  <circle cx="200" cy="370" r="4" fill="#ff9933" opacity="0.6"/>
+  <circle cx="1000" cy="370" r="4" fill="#ff9933" opacity="0.6"/>
+  <circle cx="260" cy="120" r="3" fill="#ff9933" opacity="0.5"/>
+  <circle cx="940" cy="120" r="3" fill="#ff9933" opacity="0.5"/>
+  <circle cx="600" cy="370" r="3" fill="#ff9933" opacity="0.5"/>
+  <circle cx="360" cy="330" r="3" fill="#66fcf1" opacity="0.6"/>
+  <circle cx="840" cy="330" r="3" fill="#66fcf1" opacity="0.6"/>
+  <circle cx="600" cy="140" r="3" fill="#66fcf1" opacity="0.5"/>
+
+  <!-- Horizontal connecting lines -->
+  <line x1="200" y1="370" x2="1000" y2="370" stroke="#66fcf1" stroke-width="0.8" stroke-opacity="0.2"/>
+  <line x1="260" y1="120" x2="940" y2="120" stroke="#66fcf1" stroke-width="0.8" stroke-opacity="0.15"/>
+
+  <!-- Inner glow at center -->
+  <circle cx="600" cy="225" r="40" fill="#66fcf1" fill-opacity="0.04"/>
+  <circle cx="600" cy="225" r="20" fill="#66fcf1" fill-opacity="0.06"/>
+
+  <!-- Separator -->
+  <line x1="40" y1="400" x2="1160" y2="400" stroke="#66fcf1" stroke-width="1" stroke-opacity="0.15"/>
+
+  <!-- Title -->
+  <text x="600" y="452" font-family="system-ui, sans-serif" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="-0.5">Research — long-form notes from the production floor</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="500" font-family="monospace, system-ui" font-size="16" fill="#ff9933" text-anchor="middle" letter-spacing="1.5" opacity="0.85">OCR backbones · agent design · latency war stories</text>
+
+  <!-- Bottom-right slug -->
+  <text x="1152" y="606" font-family="monospace, system-ui" font-size="15" fill="#66fcf1" text-anchor="end" opacity="0.65">leduy.py / research</text>
+</svg>
