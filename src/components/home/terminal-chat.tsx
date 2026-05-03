@@ -1,7 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useLocale } from '@/lib/i18n'
+// Try the new locale-aware export; fall back to the legacy export if the data agent hasn't landed yet.
 import { CANNED_RESPONSES } from '@/data/terminal-suggestions'
+import { MagneticButton } from './magnetic-button'
+import { APPLE_EASE_OUT_EXPO, APPLE_EASE_OUT_QUART, SOFT_SPRING, useHomeMotionPreferences } from './home-motion'
 
 const TIMESTAMP = '23:57:03'
 
@@ -9,81 +14,867 @@ interface Message {
   time: string
   text: string
   isUser?: boolean
+  streaming?: boolean
 }
 
+type WindowState = 'open' | 'minimized' | 'maximized' | 'closed'
+
+type View = 'chat' | 'compose' | 'sent'
+
+interface ComposeState {
+  subject: string
+  body: string
+  email: string
+  refineInstruction: string
+  composing: boolean // LLM draft in flight
+  sending: boolean
+  error: string | null
+}
+
+const LS_POS_KEY = 'leduy-chat-pos'
+const LS_STATE_KEY = 'leduy-chat-state'
+
+// Locale-aware canned responses map — populated when the data agent lands the new export.
+// Until then, CANNED_RESPONSES_BY_LOCALE will be undefined and we fall back to the legacy map.
+const _terminalSuggestions = require('@/data/terminal-suggestions') as {
+  CANNED_RESPONSES_BY_LOCALE?: Record<string, Record<string, string>>
+}
+const CANNED_RESPONSES_BY_LOCALE: Record<string, Record<string, string>> | undefined =
+  _terminalSuggestions.CANNED_RESPONSES_BY_LOCALE
+
 export function TerminalChat() {
+  const { locale, t } = useLocale()
+  const { prefersReducedMotion } = useHomeMotionPreferences()
+
   const [messages, setMessages] = useState<Message[]>([
-    { time: TIMESTAMP, text: 'STATUS: DUYLE.JS is online.' },
-    { time: TIMESTAMP, text: 'Feel free to ask about my work, life, or photography!' },
+    { time: TIMESTAMP, text: `STATUS: ${t('chat.statusOnline')}` },
+    {
+      time: TIMESTAMP,
+      text: `${t('chat.agentPrefix')}\n\n${t('chat.banner')}`,
+    },
   ])
   const [input, setInput] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [windowState, setWindowState] = useState<WindowState>('open')
+  const [drag, setDrag] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [hydrated, setHydrated] = useState(false)
+  const [inputFocused, setInputFocused] = useState(false)
+  const [view, setView] = useState<View>('chat')
+  const [compose, setCompose] = useState<ComposeState>({
+    subject: t('compose.subjectDefault'),
+    body: '',
+    email: '',
+    refineInstruction: '',
+    composing: false,
+    sending: false,
+    error: null,
+  })
 
-  function sendMessage(text: string) {
-    const trimmed = text.trim()
-    if (!trimmed) return
+  const dragRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(null)
+  const isDraggingRef = useRef(false)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
-    const userMsg: Message = { time: getCurrentTime(), text: trimmed, isUser: true }
-    const response = CANNED_RESPONSES[trimmed] ?? "Hmm, I don't have an answer for that yet — but feel free to email me!"
-    const botMsg: Message = { time: getCurrentTime(), text: response }
+  // Reset initial messages when locale changes
+  useEffect(() => {
+    setMessages([
+      { time: TIMESTAMP, text: `STATUS: ${t('chat.statusOnline')}` },
+      {
+        time: TIMESTAMP,
+        text: `${t('chat.agentPrefix')}\n\n${t('chat.banner')}`,
+      },
+    ])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale])
 
-    setMessages(prev => [...prev, userMsg, botMsg])
-    setInput('')
+  // Hydrate from localStorage after first render (SSR-safe)
+  useEffect(() => {
+    try {
+      const savedPos = localStorage.getItem(LS_POS_KEY)
+      if (savedPos) {
+        const pos = JSON.parse(savedPos) as { x: number; y: number }
+        if (typeof pos.x === 'number' && typeof pos.y === 'number') {
+          setDrag(pos)
+        }
+      }
+      const savedState = localStorage.getItem(LS_STATE_KEY)
+      if (savedState && ['open', 'minimized', 'maximized', 'closed'].includes(savedState)) {
+        setWindowState(savedState as WindowState)
+      }
+    } catch {
+      // ignore
+    }
+    setHydrated(true)
+  }, [])
+
+  // Persist drag position and window state
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      localStorage.setItem(LS_POS_KEY, JSON.stringify(drag))
+    } catch {
+      // ignore
+    }
+  }, [drag, hydrated])
+
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      localStorage.setItem(LS_STATE_KEY, windowState)
+    } catch {
+      // ignore
+    }
+  }, [windowState, hydrated])
+
+  // Auto-scroll on new content
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'end',
+    })
+  }, [messages, prefersReducedMotion])
+
+  // Listen for "send-this" events from suggestion pills (and other emitters).
+  useEffect(() => {
+    function onChatSend(e: Event) {
+      const detail = (e as CustomEvent<{ text?: string }>).detail
+      if (!detail?.text) return
+      // Restore window if closed/minimized so the user sees the reply.
+      setWindowState((prev) => (prev === 'closed' || prev === 'minimized' ? 'open' : prev))
+      sendMessage(detail.text)
+    }
+    window.addEventListener('leduy:chat-send', onChatSend as EventListener)
+    return () => window.removeEventListener('leduy:chat-send', onChatSend as EventListener)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, busy, locale])
+
+  // Mouse drag handlers
+  useEffect(() => {
+    function onMove(e: MouseEvent) {
+      if (!dragRef.current) return
+      isDraggingRef.current = true
+      setDrag({
+        x: dragRef.current.baseX + (e.clientX - dragRef.current.startX),
+        y: dragRef.current.baseY + (e.clientY - dragRef.current.startY),
+      })
+    }
+    function onUp() {
+      dragRef.current = null
+      isDraggingRef.current = false
+      document.body.style.userSelect = ''
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+    }
+  }, [])
+
+  function startDrag(e: React.MouseEvent) {
+    // Don't start drag on buttons
+    if ((e.target as HTMLElement).closest('button')) return
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      baseX: drag.x,
+      baseY: drag.y,
+    }
+    document.body.style.userSelect = 'none'
+  }
+
+  function resetPosition() {
+    setDrag({ x: 0, y: 0 })
+  }
+
+  function handleGreenClick(e: React.MouseEvent) {
+    e.stopPropagation()
+    setWindowState((prev) => (prev === 'maximized' ? 'open' : 'maximized'))
+  }
+
+  function handleGreenDblClick(e: React.MouseEvent) {
+    e.stopPropagation()
+    resetPosition()
   }
 
   function getCurrentTime() {
     return new Date().toTimeString().slice(0, 8)
   }
 
+  function getCannedResponses(): Record<string, string> {
+    if (CANNED_RESPONSES_BY_LOCALE) {
+      return CANNED_RESPONSES_BY_LOCALE[locale] ?? CANNED_RESPONSES_BY_LOCALE['en'] ?? CANNED_RESPONSES
+    }
+    return CANNED_RESPONSES
+  }
+
+  async function sendMessage(text: string) {
+    const trimmed = text.trim()
+    if (!trimmed || busy) return
+
+    const userMsg: Message = { time: getCurrentTime(), text: trimmed, isUser: true }
+    setMessages((prev) => [...prev, userMsg])
+    setInput('')
+
+    // Always route through the LLM (with streaming) so replies feel alive and the
+    // agent sees the full conversation context. Canned responses are intentionally
+    // not used as a fast-path here — they exist only as "warm-start" hints in the
+    // system prompt for the model.
+
+    setBusy(true)
+    const replyTime = getCurrentTime()
+    setMessages((prev) => [...prev, { time: replyTime, text: '', streaming: true }])
+
+    try {
+      const history = [...messages, userMsg]
+        .filter((m) => !m.text.startsWith('STATUS:') && m.text !== '')
+        .map((m) => ({
+          role: (m.isUser ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: m.text,
+        }))
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history, stream: true }),
+      })
+
+      if (!res.ok || !res.body) {
+        throw new Error(`http ${res.status}`)
+      }
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let acc = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        let idx
+        while ((idx = buffer.indexOf('\n\n')) !== -1) {
+          const event = buffer.slice(0, idx)
+          buffer = buffer.slice(idx + 2)
+          for (const line of event.split('\n')) {
+            if (line.startsWith('data:')) {
+              const payload = line.slice(5).trim()
+              if (payload === '[DONE]') continue
+              try {
+                const parsed = JSON.parse(payload) as { delta?: string }
+                if (parsed.delta) {
+                  acc += parsed.delta
+                  setMessages((prev) => {
+                    const next = [...prev]
+                    const last = next[next.length - 1]
+                    if (last && last.streaming) {
+                      next[next.length - 1] = { ...last, text: acc }
+                    }
+                    return next
+                  })
+                }
+              } catch {
+                /* skip malformed */
+              }
+            }
+          }
+        }
+      }
+
+      setMessages((prev) => {
+        const next = [...prev]
+        const last = next[next.length - 1]
+        if (last && last.streaming) {
+          next[next.length - 1] = { ...last, streaming: false, text: acc || '(no reply)' }
+        }
+        return next
+      })
+    } catch {
+      setMessages((prev) => {
+        const next = prev.slice(0, -1)
+        next.push({
+          time: getCurrentTime(),
+          text: `${t('chat.agentPrefix')}\n\n${t('chat.error')}`,
+        })
+        return next
+      })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function openCompose() {
+    setCompose({
+      subject: t('compose.subjectDefault'),
+      body: '',
+      email: '',
+      refineInstruction: '',
+      composing: true,
+      sending: false,
+      error: null,
+    })
+    setView('compose')
+
+    try {
+      const history = messages
+        .filter((m) => !m.text.startsWith('STATUS:') && m.text !== '')
+        .map((m) => ({
+          role: (m.isUser ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: m.text,
+        }))
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'compose', messages: history }),
+      })
+
+      if (!res.ok) throw new Error(`http ${res.status}`)
+      const data = (await res.json()) as { reply?: string }
+      setCompose((prev) => ({ ...prev, body: data.reply ?? '', composing: false }))
+    } catch {
+      setCompose((prev) => ({ ...prev, composing: false }))
+    }
+  }
+
+  async function refineCompose() {
+    setCompose((prev) => ({ ...prev, composing: true, error: null }))
+
+    try {
+      const history = messages
+        .filter((m) => !m.text.startsWith('STATUS:') && m.text !== '')
+        .map((m) => ({
+          role: (m.isUser ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: m.text,
+        }))
+
+      const currentBody = compose.body
+      const instruction = compose.refineInstruction.trim()
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'refine',
+          messages: history,
+          body: currentBody,
+          instruction,
+        }),
+      })
+
+      if (!res.ok) throw new Error(`http ${res.status}`)
+      const data = (await res.json()) as { reply?: string }
+      setCompose((prev) => ({
+        ...prev,
+        body: data.reply ?? prev.body,
+        // Clear the instruction field after a successful refine so the user can give a new one.
+        refineInstruction: '',
+        composing: false,
+      }))
+    } catch {
+      setCompose((prev) => ({ ...prev, composing: false }))
+    }
+  }
+
+  async function sendToFormSubmit() {
+    if (!compose.email.trim() || compose.sending) return
+    setCompose((prev) => ({ ...prev, sending: true, error: null }))
+
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/levduyit@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: `${t('brand.lower')} visitor`,
+          email: compose.email.trim(),
+          subject: compose.subject,
+          message: `${compose.body}\n\n${t('mailto.signature')}`,
+          _captcha: 'false',
+          _template: 'table',
+        }),
+      })
+
+      if (res.ok) {
+        setView('sent')
+      } else {
+        throw new Error(`http ${res.status}`)
+      }
+    } catch {
+      const sub = encodeURIComponent(compose.subject)
+      const bod = encodeURIComponent(compose.body)
+      const mailtoHref = `mailto:levduyit@gmail.com?subject=${sub}&body=${bod}`
+      setCompose((prev) => ({
+        ...prev,
+        sending: false,
+        error: mailtoHref,
+      }))
+    }
+  }
+
+  // Build container styles
+  const reducedMotion = prefersReducedMotion
+  const mountTransition = reducedMotion
+    ? { duration: 0.12 }
+    : { duration: 0.5, ease: APPLE_EASE_OUT_EXPO }
+  const microTransition = reducedMotion
+    ? { duration: 0.12 }
+    : { duration: 0.22, ease: APPLE_EASE_OUT_QUART }
+  const viewTransition = reducedMotion
+    ? { duration: 0.12 }
+    : { duration: 0.32, ease: APPLE_EASE_OUT_EXPO }
+
+  const baseContainerStyle: React.CSSProperties = {
+    backgroundColor: 'rgb(var(--surface-card) / 0.72)',
+    borderColor: 'rgb(var(--border) / 0.6)',
+    boxShadow: 'var(--shadow-card)',
+  }
+
+  const normalTransform = reducedMotion
+    ? undefined
+    : `translate3d(${drag.x}px, ${drag.y}px, 0)`
+
+  const normalContainerStyle: React.CSSProperties = {
+    ...baseContainerStyle,
+    transform: normalTransform,
+    transition: dragRef.current || reducedMotion
+      ? 'none'
+      : 'transform 200ms var(--ease-out-quart), box-shadow 200ms',
+  }
+
+  const maximizedContainerStyle: React.CSSProperties = {
+    ...baseContainerStyle,
+    position: 'fixed',
+    width: 'min(960px, calc(100vw - 32px))',
+    height: 'min(720px, 80vh)',
+    top: '96px',
+    left: '50%',
+    transform: reducedMotion ? 'translateX(-50%)' : 'translateX(-50%)',
+    transition: reducedMotion ? 'none' : 'all 240ms var(--ease-out-quart)',
+    zIndex: 50,
+    display: 'flex',
+    flexDirection: 'column',
+  }
+
+  if (windowState === 'closed') {
+    return (
+      <MagneticButton
+        onClick={() => setWindowState('open')}
+        pull={4}
+        className="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] px-4 py-2 font-mono text-xs text-[rgb(var(--text-secondary))] transition-colors duration-200 hover:border-[rgb(var(--accent))] hover:text-[rgb(var(--accent))]"
+      >
+        <span className="h-2 w-2 rounded-full bg-[rgb(34,197,94)]" />
+        {t('chat.reopen')}
+      </MagneticButton>
+    )
+  }
+
+  const isMaximized = windowState === 'maximized'
+  const containerStyle = isMaximized ? maximizedContainerStyle : normalContainerStyle
+  const containerClass = isMaximized
+    ? 'w-full rounded-3xl border backdrop-blur-md overflow-hidden'
+    : 'w-full rounded-3xl border backdrop-blur-md overflow-hidden transition-shadow duration-200'
+
+  const containerA11y = isMaximized
+    ? { role: 'dialog' as const, 'aria-modal': true, 'aria-label': "Duy's agent — maximized" }
+    : {}
+
   return (
-    <div className="flex flex-col rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface-card))] overflow-hidden w-full">
-      {/* Title bar */}
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[rgb(var(--border))] bg-[rgb(var(--surface-overlay))]">
-        <span className="w-3 h-3 rounded-full bg-[rgb(239,68,68)]" />
-        <span className="w-3 h-3 rounded-full bg-[rgb(234,179,8)]" />
-        <span className="w-3 h-3 rounded-full bg-[rgb(34,197,94)]" />
-        <span className="ml-2 text-xs font-mono text-[rgb(var(--text-muted))]">
-          duyle.js ~ %
-        </span>
-      </div>
+    <>
+      <AnimatePresence>
+        {isMaximized && (
+          <motion.div
+            key="terminal-backdrop"
+            onClick={() => setWindowState('open')}
+            className="fixed inset-0 bg-[rgba(0,0,0,0.55)] backdrop-blur-sm"
+            style={{ zIndex: 49 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={viewTransition}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Messages */}
-      <div className="flex flex-col gap-2 px-4 py-4 min-h-[200px] max-h-[320px] overflow-y-auto font-mono text-sm">
-        {messages.map((msg, i) => (
-          <div key={i}>
-            {msg.isUser ? (
-              <p className="text-[rgb(var(--text-secondary))]">
-                <span className="text-[rgb(var(--accent))]">&gt; </span>
-                {msg.text}
-              </p>
-            ) : (
-              <p className="text-white">
-                <span className="text-[rgb(var(--text-muted))]">[{msg.time}]</span>{' '}
-                {msg.text.includes('STATUS:') ? (
-                  <>
-                    <span className="text-[rgb(var(--accent))] font-semibold">STATUS:</span>
-                    {msg.text.replace('STATUS:', '')}
-                  </>
-                ) : (
-                  msg.text
-                )}
-              </p>
-            )}
+      <motion.div
+        initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={mountTransition}
+      >
+        <div
+          className={containerClass}
+          style={containerStyle}
+          {...containerA11y}
+        >
+          {/* Title bar — draggable */}
+          <div
+            onMouseDown={startDrag}
+            onDoubleClick={resetPosition}
+            className="flex cursor-grab select-none items-center gap-2 border-b px-4 py-2.5 active:cursor-grabbing"
+            style={{
+              backgroundColor: 'rgb(var(--surface-overlay) / 0.6)',
+              borderColor: 'rgb(var(--border) / 0.5)',
+              borderTopLeftRadius: 'inherit',
+              borderTopRightRadius: 'inherit',
+              flexShrink: 0,
+            }}
+          >
+            <motion.button
+              onClick={(event) => { event.stopPropagation(); setWindowState('closed') }}
+              aria-label="Close"
+              className="group relative h-3 w-3 rounded-full bg-[rgb(239,68,68)]"
+              whileHover={reducedMotion ? undefined : { scale: 1.08 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.94 }}
+              transition={reducedMotion ? { duration: 0.12 } : { type: 'spring', ...SOFT_SPRING }}
+            >
+              <span className="invisible absolute inset-0 flex items-center justify-center text-[8px] font-bold text-[rgba(0,0,0,0.6)] group-hover:visible">×</span>
+            </motion.button>
+            <motion.button
+              onClick={(event) => { event.stopPropagation(); setWindowState('minimized') }}
+              aria-label="Minimize"
+              className="group relative h-3 w-3 rounded-full bg-[rgb(234,179,8)]"
+              whileHover={reducedMotion ? undefined : { scale: 1.08 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.94 }}
+              transition={reducedMotion ? { duration: 0.12 } : { type: 'spring', ...SOFT_SPRING }}
+            >
+              <span className="invisible absolute inset-0 flex items-center justify-center text-[8px] font-bold text-[rgba(0,0,0,0.6)] group-hover:visible">−</span>
+            </motion.button>
+            <motion.button
+              onClick={handleGreenClick}
+              onDoubleClick={handleGreenDblClick}
+              aria-label={isMaximized ? 'Restore window' : 'Maximize window'}
+              title="Click to maximize/restore · Double-click to recenter"
+              className="group relative h-3 w-3 rounded-full bg-[rgb(34,197,94)]"
+              whileHover={reducedMotion ? undefined : { scale: 1.08 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.94 }}
+              transition={reducedMotion ? { duration: 0.12 } : { type: 'spring', ...SOFT_SPRING }}
+            >
+              <span className="invisible absolute inset-0 flex items-center justify-center text-[8px] font-bold text-[rgba(0,0,0,0.6)] group-hover:visible">⤢</span>
+            </motion.button>
+            <span className="ml-3 text-xs font-mono text-[rgb(var(--text-muted))]">
+              {t('brand.shellPrompt')}
+            </span>
+            <span className="ml-auto flex items-center gap-1.5 text-[10px] font-mono text-[rgb(var(--text-muted))]">
+              <span className={`h-1.5 w-1.5 rounded-full ${busy ? 'bg-[rgb(234,179,8)] animate-pulse' : 'bg-[rgb(34,197,94)]'}`} />
+              {busy ? t('chat.statusBusy') : t('chat.statusIdle')}
+            </span>
           </div>
-        ))}
-      </div>
 
-      {/* Input */}
-      <div className="flex items-center gap-2 px-4 py-3 border-t border-[rgb(var(--border))]">
-        <span className="text-[rgb(var(--accent))] font-mono text-sm">&gt;</span>
-        <input
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
-          placeholder="Ask me anything..."
-          className="flex-1 bg-transparent font-mono text-sm text-white placeholder-[rgb(var(--text-muted))] outline-none caret-[rgb(var(--accent))]"
-        />
-      </div>
-    </div>
+          <AnimatePresence mode="wait">
+            {(windowState === 'open' || windowState === 'maximized') && view === 'chat' && (
+              <motion.div
+                key="chat-view"
+                className={isMaximized ? 'flex flex-1 flex-col' : 'flex flex-col'}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                transition={viewTransition}
+              >
+                <div
+                  className={`flex flex-col gap-3 overflow-y-auto px-4 py-4 font-mono text-sm ${isMaximized ? 'flex-1' : 'min-h-[340px] max-h-[520px]'}`}
+                >
+                  <AnimatePresence initial={!reducedMotion}>
+                    {messages.map((msg, i) => {
+                      const isStatus = msg.text.startsWith('STATUS:')
+                      const isAgentReply =
+                        !msg.isUser &&
+                        !isStatus &&
+                        !msg.streaming &&
+                        msg.text.trim().length > 0 &&
+                        i > 1
+
+                      return (
+                        <motion.div
+                          key={`${msg.time}-${i}-${msg.isUser ? 'user' : 'agent'}`}
+                          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -4 }}
+                          transition={microTransition}
+                        >
+                          {msg.isUser ? (
+                            <p className="whitespace-pre-wrap text-[rgb(var(--text-secondary))]">
+                              <span className="text-[rgb(var(--accent))]">&gt; </span>
+                              {msg.text}
+                            </p>
+                          ) : (
+                            <p className="whitespace-pre-wrap leading-relaxed text-white">
+                              <span className="mr-2 text-[rgb(var(--text-muted))]">[{msg.time}]</span>
+                              {isStatus ? (
+                                <>
+                                  <span className="font-semibold text-[rgb(var(--accent))]">STATUS:</span>
+                                  {msg.text.replace('STATUS:', '')}
+                                </>
+                              ) : (
+                                <>
+                                  {msg.text}
+                                  {msg.streaming && (
+                                    <span className="ml-1 inline-block h-3 w-1.5 animate-pulse align-middle bg-[rgb(var(--accent))]" />
+                                  )}
+                                </>
+                              )}
+                            </p>
+                          )}
+                          {isAgentReply && (
+                            <div className="mt-1.5 ml-[5.5rem] flex items-center gap-2 text-[10px] font-mono text-[rgb(var(--text-muted))]">
+                              <span aria-hidden>↗</span>
+                              <MagneticButton
+                                onClick={openCompose}
+                                pull={4}
+                                className="rounded-full border border-[rgb(var(--accent)/0.3)] px-2 py-0.5 text-[rgb(var(--accent))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.1)]"
+                              >
+                                {t('compose.button')}
+                              </MagneticButton>
+                              <span className="opacity-70">— relay this thread to Duy&apos;s inbox</span>
+                            </div>
+                          )}
+                        </motion.div>
+                      )
+                    })}
+                  </AnimatePresence>
+                  <div ref={messagesEndRef} />
+                </div>
+
+                <motion.div
+                  className="flex items-center gap-2 border-t px-4 py-3"
+                  style={{ borderColor: 'rgb(var(--border) / 0.5)', flexShrink: 0 }}
+                  animate={inputFocused && !reducedMotion
+                    ? { boxShadow: '0 -14px 28px rgba(102,252,241,0.08)' }
+                    : { boxShadow: '0 0 0 rgba(102,252,241,0)' }}
+                  transition={microTransition}
+                >
+                  <motion.span
+                    className="font-mono text-sm text-[rgb(var(--accent))]"
+                    animate={inputFocused && !reducedMotion
+                      ? {
+                        opacity: [1, 0.35, 1],
+                        textShadow: [
+                          '0 0 0 rgba(102,252,241,0)',
+                          '0 0 12px rgba(102,252,241,0.45)',
+                          '0 0 0 rgba(102,252,241,0)',
+                        ],
+                      }
+                      : { opacity: 1, textShadow: '0 0 0 rgba(102,252,241,0)' }}
+                    transition={inputFocused && !reducedMotion
+                      ? { duration: 1.1, ease: 'easeInOut', repeat: Number.POSITIVE_INFINITY }
+                      : microTransition}
+                  >
+                    &gt;
+                  </motion.span>
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(event) => setInput(event.target.value)}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
+                    onKeyDown={(event) => event.key === 'Enter' && sendMessage(input)}
+                    placeholder={busy ? t('chat.placeholderBusy') : t('chat.placeholder')}
+                    disabled={busy}
+                    className="flex-1 bg-transparent font-mono text-sm text-white outline-none caret-[rgb(var(--accent))] placeholder-[rgb(var(--text-muted))] disabled:opacity-60"
+                  />
+                  <MagneticButton
+                    onClick={openCompose}
+                    disabled={busy}
+                    pull={5}
+                    className="ml-2 rounded-full border border-[rgb(var(--accent)/0.5)] px-3 py-1 text-[11px] font-mono text-[rgb(var(--accent))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.08)] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {t('compose.button')}
+                  </MagneticButton>
+                </motion.div>
+              </motion.div>
+            )}
+
+            {(windowState === 'open' || windowState === 'maximized') && view === 'compose' && (
+              <motion.div
+                key="compose-view"
+                className={`flex flex-col gap-4 overflow-y-auto px-4 py-4 ${isMaximized ? 'flex-1' : 'min-h-[340px]'}`}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                transition={viewTransition}
+              >
+                <p className="font-mono text-xs text-[rgb(var(--text-muted))]">
+                  {t('compose.title')}
+                </p>
+
+                <div className="flex flex-col gap-1">
+                  <label className="font-mono text-[11px] text-[rgb(var(--text-muted))]">{t('compose.subjectLabel')}</label>
+                  <input
+                    type="text"
+                    value={compose.subject}
+                    onChange={(event) => setCompose((prev) => ({ ...prev, subject: event.target.value }))}
+                    className="rounded-lg border px-3 py-2 font-mono text-sm text-[rgb(var(--text-primary))] outline-none transition-all duration-200 focus:ring-2"
+                    style={{
+                      backgroundColor: 'rgb(var(--surface-overlay))',
+                      borderColor: 'rgb(var(--border))',
+                      // @ts-expect-error CSS custom property
+                      '--tw-ring-color': 'rgb(var(--accent) / 0.4)',
+                    }}
+                  />
+                </div>
+
+                <div className="relative flex flex-col gap-1">
+                  <label className="font-mono text-[11px] text-[rgb(var(--text-muted))]">{t('compose.bodyLabel')}</label>
+                  <textarea
+                    rows={8}
+                    value={compose.body}
+                    onChange={(event) => setCompose((prev) => ({ ...prev, body: event.target.value }))}
+                    placeholder={t('compose.bodyPlaceholder')}
+                    className="resize-y rounded-lg border px-3 py-2 font-mono text-sm text-[rgb(var(--text-primary))] outline-none transition-all duration-200 focus:ring-2"
+                    style={{
+                      backgroundColor: 'rgb(var(--surface-overlay))',
+                      borderColor: 'rgb(var(--border))',
+                      // @ts-expect-error CSS custom property
+                      '--tw-ring-color': 'rgb(var(--accent) / 0.4)',
+                    }}
+                  />
+                  <AnimatePresence>
+                    {compose.composing && (
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center rounded-lg bg-[rgba(0,0,0,0.35)]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={microTransition}
+                      >
+                        <span className="animate-pulse font-mono text-xs text-[rgb(var(--text-muted))]">drafting...</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="font-mono text-[11px] text-[rgb(var(--text-muted))]">{t('compose.fromLabel')}</label>
+                  <input
+                    type="email"
+                    value={compose.email}
+                    onChange={(event) => setCompose((prev) => ({ ...prev, email: event.target.value }))}
+                    placeholder={t('compose.fromPlaceholder')}
+                    required
+                    className="rounded-lg border px-3 py-2 font-mono text-sm text-[rgb(var(--text-primary))] outline-none transition-all duration-200 focus:ring-2"
+                    style={{
+                      backgroundColor: 'rgb(var(--surface-overlay))',
+                      borderColor: 'rgb(var(--border))',
+                      // @ts-expect-error CSS custom property
+                      '--tw-ring-color': 'rgb(var(--accent) / 0.4)',
+                    }}
+                  />
+                </div>
+
+                {compose.error && (
+                  <p className="font-mono text-xs text-[rgb(var(--text-secondary))]">
+                    {t('compose.fallback').split('?')[0]}
+                    {' '}
+                    <motion.a
+                      href={compose.error}
+                      className="text-[rgb(var(--accent))] underline transition-colors duration-200 hover:text-[rgb(var(--accent-hover))]"
+                      whileHover={reducedMotion ? undefined : { y: -1 }}
+                      whileTap={reducedMotion ? undefined : { scale: 0.98 }}
+                      transition={microTransition}
+                    >
+                      {t('compose.fallback').split('?')[1] ?? 'Open in your email app instead?'}
+                    </motion.a>
+                  </p>
+                )}
+
+                <p className="font-mono text-[10px] leading-relaxed text-[rgb(var(--text-muted))]">
+                  {t('compose.confirmNote')}
+                </p>
+
+                {/* Refine instruction (optional) — guides the next LLM polish pass */}
+                <div className="flex flex-col gap-1">
+                  <label className="font-mono text-[10px] uppercase tracking-wider text-[rgb(var(--text-muted))]">
+                    {t('compose.refineInstructionLabel')}
+                  </label>
+                  <input
+                    type="text"
+                    value={compose.refineInstruction}
+                    onChange={(event) =>
+                      setCompose((prev) => ({ ...prev, refineInstruction: event.target.value }))
+                    }
+                    placeholder={t('compose.refineInstructionPlaceholder')}
+                    className="rounded-lg border px-3 py-2 font-mono text-xs text-[rgb(var(--text-primary))] outline-none transition-all duration-200 focus:ring-2"
+                    style={{
+                      backgroundColor: 'rgb(var(--surface-overlay))',
+                      borderColor: 'rgb(var(--border))',
+                      // @ts-expect-error CSS custom property
+                      '--tw-ring-color': 'rgb(var(--accent) / 0.4)',
+                    }}
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2" style={{ flexShrink: 0 }}>
+                  <MagneticButton
+                    onClick={refineCompose}
+                    disabled={compose.composing || compose.sending}
+                    pull={4}
+                    className="rounded-full border border-[rgb(var(--accent)/0.5)] px-4 py-1.5 text-[11px] font-mono text-[rgb(var(--accent))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.08)] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {t('compose.refine')}
+                  </MagneticButton>
+                  <MagneticButton
+                    onClick={sendToFormSubmit}
+                    disabled={!compose.email.trim() || compose.composing || compose.sending}
+                    pull={5}
+                    className="rounded-full bg-[rgb(var(--accent))] px-4 py-1.5 text-[11px] font-mono text-[rgb(var(--surface-card))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {compose.sending ? 'Sending...' : t('compose.send')}
+                  </MagneticButton>
+                  <MagneticButton
+                    onClick={() => { setView('chat'); setCompose((prev) => ({ ...prev, error: null })) }}
+                    disabled={compose.sending}
+                    pull={4}
+                    className="rounded-full border border-[rgb(var(--border))] px-4 py-1.5 text-[11px] font-mono text-[rgb(var(--text-secondary))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent)/0.5)] hover:text-[rgb(var(--accent))] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {t('compose.cancel')}
+                  </MagneticButton>
+                </div>
+              </motion.div>
+            )}
+
+            {(windowState === 'open' || windowState === 'maximized') && view === 'sent' && (
+              <motion.div
+                key="sent-view"
+                className={`flex flex-col items-start justify-center gap-4 px-4 py-6 ${isMaximized ? 'flex-1' : 'min-h-[340px]'}`}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                transition={viewTransition}
+              >
+                <p className="font-mono text-sm text-white">
+                  {t('compose.sentTitle')}
+                </p>
+                <MagneticButton
+                  onClick={() => { setView('chat') }}
+                  pull={4}
+                  className="rounded-full border border-[rgb(var(--accent)/0.5)] px-4 py-1.5 text-[11px] font-mono text-[rgb(var(--accent))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.08)]"
+                >
+                  {t('compose.sentBack')}
+                </MagneticButton>
+              </motion.div>
+            )}
+
+            {windowState === 'minimized' && (
+              <motion.div
+                key="minimized-view"
+                className="px-4 py-2 font-mono text-[10px] text-[rgb(var(--text-muted))]"
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -4 }}
+                transition={microTransition}
+              >
+                {t('chat.minimizedHint')}
+                <MagneticButton
+                  onClick={() => setWindowState('open')}
+                  pull={3}
+                  className="ml-2 underline transition-colors duration-200 text-[rgb(var(--accent))] hover:text-[rgb(var(--accent-hover))]"
+                >
+                  {t('chat.restore')}
+                </MagneticButton>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+    </>
   )
 }

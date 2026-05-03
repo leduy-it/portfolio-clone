@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from 'react'
+import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import { useTheme } from 'next-themes'
+import { SOFT_SPRING, useHomeMotionPreferences } from './home-motion'
 import { GameOfLifeBackground } from './game-of-life-background'
 
 interface HomeBackgroundWrapperProps {
@@ -31,23 +33,30 @@ const mobileStore = createMediaQueryStore('(max-width: 1023px)')
 
 export function HomeBackgroundWrapper({ active = false }: HomeBackgroundWrapperProps) {
   const { resolvedTheme } = useTheme()
+  const { prefersReducedMotion } = useHomeMotionPreferences()
   const isMobile = useSyncExternalStore(
     mobileStore.subscribe,
     mobileStore.getSnapshot,
     mobileStore.getServerSnapshot
   )
-
-  // Match original: dark = accent (#66fcf1), light = accent-hover (#0d9488)
-  const color = resolvedTheme === 'dark' ? '#66fcf1' : '#0d9488'
+  const { scrollYProgress } = useScroll()
+  const backgroundOffset = useTransform(scrollYProgress, [0, 1], [0, prefersReducedMotion ? 0 : 30])
+  const backgroundY = useSpring(backgroundOffset, SOFT_SPRING)
+  const color = resolvedTheme && typeof window !== 'undefined'
+    ? `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()})`
+    : ''
 
   return (
-    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+    <motion.div
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: 0, y: prefersReducedMotion ? 0 : backgroundY }}
+    >
       <GameOfLifeBackground
         color={color}
         active={active}
         mobileLite={isMobile}
         pauseWhenHidden
       />
-    </div>
+    </motion.div>
   )
 }

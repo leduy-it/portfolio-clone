@@ -9,6 +9,30 @@ interface GameOfLifeBackgroundProps {
   pauseWhenHidden?: boolean
 }
 
+function withAlpha(color: string, alpha: number) {
+  if (color.startsWith('rgb(')) {
+    return color.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`)
+  }
+  if (color.startsWith('#')) {
+    const hex = color.slice(1)
+    const value = hex.length === 3
+      ? hex.split('').map((p) => `${p}${p}`).join('')
+      : hex
+    const r = Number.parseInt(value.slice(0, 2), 16)
+    const g = Number.parseInt(value.slice(2, 4), 16)
+    const b = Number.parseInt(value.slice(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  return color
+}
+
+interface Marker {
+  x: number
+  y: number
+  phase: number
+  speed: number
+}
+
 export function GameOfLifeBackground({
   color,
   active = false,
@@ -19,124 +43,129 @@ export function GameOfLifeBackground({
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
-
+    if (!canvas || !color) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Cell size: 14px on mobile, 10px on desktop
-    const cellSize = mobileLite ? 14 : 10
-    // Frame interval: ~333ms on mobile, ~250ms on desktop
-    const frameInterval = 1000 / (mobileLite ? 3 : 4)
-    // Initial density of alive cells
-    const density = mobileLite ? 0.08 : 0.12
+    const gridSize = mobileLite ? 28 : 36
+    const dotRadius = 0.7
+    const sweepDuration = 14_000
+    const noiseInterval = 1000 / (mobileLite ? 24 : 30)
+    const markerCount = mobileLite ? 4 : 8
 
-    let cols = 0
-    let rows = 0
-    let current = new Uint8Array(0)
-    let next = new Uint8Array(0)
-    let animFrameId = 0
-    let lastFrameTime = 0
-    let stableFrameCount = 0
+    let width = 0
+    let height = 0
+    let dpr = 1
+    let markers: Marker[] = []
+    let raf = 0
+    let lastFrame = 0
+    let startTs = performance.now()
 
-    const idx = (row: number, col: number) => row * cols + col
-
-    const randomize = () => {
-      for (let i = 0; i < current.length; i++) {
-        current[i] = Math.random() < density ? 1 : 0
-      }
-      stableFrameCount = 0
-    }
-
-    const countNeighbors = (row: number, col: number) => {
-      let count = 0
-      for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-          if (dr === 0 && dc === 0) continue
-          count += current[idx((row + dr + rows) % rows, (col + dc + cols) % cols)]
-        }
-      }
-      return count
+    const seedMarkers = () => {
+      markers = Array.from({ length: markerCount }, () => ({
+        x: Math.floor(Math.random() * width),
+        y: Math.floor(Math.random() * height),
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.6 + Math.random() * 0.8,
+      }))
     }
 
     const resize = () => {
-      const w = window.innerWidth
-      const h = window.innerHeight
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-
-      canvas.width = Math.floor(w * dpr)
-      canvas.height = Math.floor(h * dpr)
-      canvas.style.width = `${w}px`
-      canvas.style.height = `${h}px`
+      width = window.innerWidth
+      height = window.innerHeight
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      seedMarkers()
+    }
 
-      const newCols = Math.ceil(w / cellSize)
-      const newRows = Math.ceil(h / cellSize)
-
-      if (newCols !== cols || newRows !== rows) {
-        cols = newCols
-        rows = newRows
-        current = new Uint8Array(rows * cols)
-        next = new Uint8Array(rows * cols)
-        randomize()
+    const drawDotGrid = () => {
+      const baseAlpha = active ? 0.16 : 0.12
+      ctx.fillStyle = withAlpha(color, baseAlpha)
+      const offset = gridSize / 2
+      for (let y = offset; y < height; y += gridSize) {
+        for (let x = offset; x < width; x += gridSize) {
+          ctx.beginPath()
+          ctx.arc(x, y, dotRadius, 0, Math.PI * 2)
+          ctx.fill()
+        }
       }
     }
 
-    const step = (timestamp: number) => {
-      animFrameId = window.requestAnimationFrame(step)
+    const drawSweep = (ts: number) => {
+      const t = ((ts - startTs) % sweepDuration) / sweepDuration
+      const beamY = t * (height + 240) - 120
+      const grad = ctx.createLinearGradient(0, beamY - 80, 0, beamY + 80)
+      grad.addColorStop(0, withAlpha(color, 0))
+      grad.addColorStop(0.5, withAlpha(color, active ? 0.1 : 0.07))
+      grad.addColorStop(1, withAlpha(color, 0))
+      ctx.fillStyle = grad
+      ctx.fillRect(0, beamY - 80, width, 160)
 
-      // Pause when tab is hidden
-      if (pauseWhenHidden && typeof document !== 'undefined' && document.hidden) return
-      // Throttle to target frame interval
-      if (timestamp - lastFrameTime < frameInterval) return
-      lastFrameTime = timestamp
+      ctx.strokeStyle = withAlpha(color, active ? 0.32 : 0.22)
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(0, beamY)
+      ctx.lineTo(width, beamY)
+      ctx.stroke()
+    }
 
-      // Conway's Game of Life update
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const neighbors = countNeighbors(r, c)
-          const i = idx(r, c)
-          next[i] = current[i] ? (neighbors === 2 || neighbors === 3 ? 1 : 0) : (neighbors === 3 ? 1 : 0)
-        }
+    const drawCorners = () => {
+      const inset = 24
+      const len = 14
+      ctx.strokeStyle = withAlpha(color, active ? 0.28 : 0.2)
+      ctx.lineWidth = 1
+      const corners: [number, number, number, number][] = [
+        [inset, inset, inset + len, inset],
+        [inset, inset, inset, inset + len],
+        [width - inset, inset, width - inset - len, inset],
+        [width - inset, inset, width - inset, inset + len],
+        [inset, height - inset, inset + len, height - inset],
+        [inset, height - inset, inset, height - inset - len],
+        [width - inset, height - inset, width - inset - len, height - inset],
+        [width - inset, height - inset, width - inset, height - inset - len],
+      ]
+      ctx.beginPath()
+      for (const [x1, y1, x2, y2] of corners) {
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
       }
-      // Swap buffers
-      const tmp = current
-      current = next
-      next = tmp
+      ctx.stroke()
+    }
 
-      // Re-randomize if population dies out or explodes (after 600 stable frames)
-      if (++stableFrameCount >= 600) {
-        let alive = 0
-        for (let i = 0; i < current.length; i++) alive += current[i]
-        if (alive < 0.02 * current.length || alive > 0.6 * current.length) {
-          randomize()
-        } else {
-          stableFrameCount = 0
-        }
+    const drawMarkers = (ts: number) => {
+      ctx.font = `600 11px ${getComputedStyle(document.body).fontFamily || 'monospace'}`
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'top'
+      for (const m of markers) {
+        const blink = (Math.sin((ts / 1000) * m.speed + m.phase) + 1) / 2
+        const alpha = 0.08 + blink * (active ? 0.32 : 0.22)
+        ctx.fillStyle = withAlpha(color, alpha)
+        ctx.fillRect(m.x, m.y, 6, 1)
+        ctx.fillRect(m.x, m.y, 1, 6)
       }
+    }
 
-      // Draw
-      const w = window.innerWidth
-      const h = window.innerHeight
-      ctx.clearRect(0, 0, w, h)
-      ctx.fillStyle = color
-      ctx.globalAlpha = active ? 0.1 : 0.16
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          if (current[idx(r, c)]) {
-            ctx.fillRect(c * cellSize, r * cellSize, cellSize - 1, cellSize - 1)
-          }
-        }
-      }
+    const step = (ts: number) => {
+      raf = window.requestAnimationFrame(step)
+      if (pauseWhenHidden && document.hidden) return
+      if (ts - lastFrame < noiseInterval) return
+      lastFrame = ts
+      ctx.clearRect(0, 0, width, height)
+      drawDotGrid()
+      drawSweep(ts)
+      drawCorners()
+      drawMarkers(ts)
     }
 
     resize()
     window.addEventListener('resize', resize)
-    animFrameId = window.requestAnimationFrame(step)
-
+    raf = window.requestAnimationFrame(step)
     return () => {
-      window.cancelAnimationFrame(animFrameId)
+      window.cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
     }
   }, [active, color, mobileLite, pauseWhenHidden])
