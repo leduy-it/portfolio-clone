@@ -671,15 +671,55 @@ export function TerminalChat() {
                     disabled={busy}
                     className="flex-1 bg-transparent font-mono text-sm text-white outline-none caret-[rgb(var(--accent))] placeholder-[rgb(var(--text-muted))] disabled:opacity-60"
                   />
+                  <button
+                    type="button"
+                    onClick={() => sendMessage(input)}
+                    disabled={busy || !input.trim()}
+                    aria-label="Send chat"
+                    title="Send chat (Enter)"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[rgb(var(--accent))] text-[rgb(var(--surface-page))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:brightness-110 active:scale-[0.94] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  </button>
+                </motion.div>
+
+                {/* Email-Duy row — visually distinct from chat (amber, envelope icon) */}
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2 border-t px-4 py-2.5"
+                  style={{
+                    borderColor: 'rgb(var(--border) / 0.4)',
+                    backgroundColor: 'rgb(var(--surface-overlay) / 0.45)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span className="flex items-center gap-2 font-mono text-[10px] tracking-wide text-[rgb(var(--text-muted))]">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    Want Duy himself? Send him an email →
+                  </span>
                   <MagneticButton
                     onClick={openCompose}
                     disabled={busy}
                     pull={5}
-                    className="ml-2 rounded-full border border-[rgb(var(--accent)/0.5)] px-3 py-1 text-[11px] font-mono text-[rgb(var(--accent))] transition-all duration-200 ease-[var(--ease-out-quart)] hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.08)] disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-mono transition-all duration-200 ease-[var(--ease-out-quart)] disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{
+                      borderColor: 'rgb(var(--accent-warm) / 0.55)',
+                      color: 'rgb(var(--accent-warm))',
+                      backgroundColor: 'rgb(var(--accent-warm) / 0.06)',
+                    }}
                   >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
                     {t('compose.button')}
                   </MagneticButton>
-                </motion.div>
+                </div>
               </motion.div>
             )}
 
