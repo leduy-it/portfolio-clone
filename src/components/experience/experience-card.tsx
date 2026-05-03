@@ -3,8 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useLocale } from '@/lib/i18n'
 import { pickLocalized } from '@/lib/i18n'
 import { EASE_OUT_EXPO, EASE_OUT_QUART, SPRING_SOFT } from './experience-timeline-reveal'
@@ -29,22 +28,26 @@ interface ExperienceEntry {
 interface ExperienceCardProps {
   entry: ExperienceEntry
   featured?: boolean
+  variant?: CompactCardVariant
+  sectionNumber?: string
 }
 
 type PixelLogoSize = 'featured' | 'compact' | 'detail'
+type CompactCardVariant = 'wide' | 'narrow'
+type ExperienceKind = 'work' | 'award' | 'upcoming'
 
 const MotionLink = motion.create(Link)
 
 const cardVariants = {
   rest: { y: 0, scale: 1 },
   hover: {
-    y: -4,
-    scale: 1.015,
+    y: -3,
+    scale: 1.008,
     transition: SPRING_SOFT,
   },
   tap: {
     y: -1,
-    scale: 0.992,
+    scale: 0.99,
     transition: {
       duration: 0.18,
       ease: EASE_OUT_QUART,
@@ -63,26 +66,6 @@ const logoVariants = {
     transition: {
       duration: 0.5,
       ease: EASE_OUT_EXPO,
-    },
-  },
-}
-
-const chevronVariants = {
-  rest: { x: 0, opacity: 0.55 },
-  hover: {
-    x: 6,
-    opacity: 1,
-    transition: {
-      duration: 0.22,
-      ease: EASE_OUT_QUART,
-    },
-  },
-  tap: {
-    x: 3,
-    opacity: 1,
-    transition: {
-      duration: 0.16,
-      ease: EASE_OUT_QUART,
     },
   },
 }
@@ -120,7 +103,12 @@ const cardTransitionStyle = {
   transitionTimingFunction: 'var(--ease-out-expo)',
 } as const
 
-export function ExperienceCard({ entry, featured = false }: ExperienceCardProps) {
+export function ExperienceCard({
+  entry,
+  featured = false,
+  variant = 'narrow',
+  sectionNumber,
+}: ExperienceCardProps) {
   const isWhatsNext = entry.slug === 'whats-next'
 
   if (isWhatsNext) {
@@ -131,7 +119,120 @@ export function ExperienceCard({ entry, featured = false }: ExperienceCardProps)
     return <FeaturedCard entry={entry} />
   }
 
-  return <CompactCard entry={entry} />
+  return (
+    <CompactCard
+      entry={entry}
+      variant={variant}
+      sectionNumber={sectionNumber}
+    />
+  )
+}
+
+const AWARD_SLUGS = new Set(['soict-hackathon', 'hcmc-dost-award'])
+
+function getExperienceKind(slug: string): ExperienceKind {
+  if (slug === 'whats-next') return 'upcoming'
+  if (AWARD_SLUGS.has(slug)) return 'award'
+  return 'work'
+}
+
+function isWarmKind(kind: ExperienceKind) {
+  return kind === 'award' || kind === 'upcoming'
+}
+
+function getAccentRgbToken(kind: ExperienceKind) {
+  return isWarmKind(kind) ? 'var(--accent-warm)' : 'var(--accent)'
+}
+
+function getKindLabel(kind: ExperienceKind) {
+  if (kind === 'award') return 'AWARD'
+  if (kind === 'upcoming') return 'OPEN SLOT'
+  return 'WORK'
+}
+
+function KindBadge({ kind, compact = false }: { kind: ExperienceKind; compact?: boolean }) {
+  const badgeClass = isWarmKind(kind)
+    ? 'border-[rgb(var(--accent-warm)/0.6)] bg-[rgb(var(--accent-warm)/0.12)] text-[rgb(var(--accent-warm))]'
+    : 'border-[rgb(var(--accent)/0.58)] bg-[rgb(var(--accent)/0.1)] text-[rgb(var(--accent))]'
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border font-mono font-semibold uppercase ${compact ? 'px-2 py-0.5 text-[9px] tracking-[0.18em]' : 'px-2.5 py-1 text-[10px] tracking-[0.22em]'} ${badgeClass}`}
+    >
+      {kind === 'award' ? <span aria-hidden="true">▲</span> : null}
+      {getKindLabel(kind)}
+    </span>
+  )
+}
+
+function EditorialTagRow({
+  kind,
+  dates,
+  id,
+  compact = false,
+}: {
+  kind: ExperienceKind
+  dates?: string
+  id: string
+  compact?: boolean
+}) {
+  return (
+    <div
+      className={`relative z-10 flex flex-wrap items-center gap-2 font-mono uppercase text-[rgb(var(--text-muted))] ${compact ? 'text-[10px] tracking-[0.18em]' : 'text-[11px] tracking-[0.22em]'}`}
+    >
+      <KindBadge kind={kind} compact={compact} />
+      {dates ? (
+        <>
+          <span className="text-[rgb(var(--border-muted))]">·</span>
+          <span>{dates}</span>
+        </>
+      ) : null}
+      <span className="text-[rgb(var(--border-muted))]">·</span>
+      <span>#{id}</span>
+    </div>
+  )
+}
+
+function SectionNumber({ value }: { value: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute left-5 top-5 z-0 font-mono text-6xl font-semibold leading-none tracking-normal text-[rgb(var(--border-muted)/0.2)] sm:text-7xl"
+    >
+      {value}
+    </span>
+  )
+}
+
+function HoverSideRail({ kind }: { kind: ExperienceKind }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute left-0 top-0 z-20 h-full w-1 origin-top scale-y-0 rounded-r-full transition-transform duration-[380ms] group-hover:scale-y-100 motion-reduce:transition-none"
+      style={{
+        ...cardTransitionStyle,
+        backgroundColor: `rgb(${getAccentRgbToken(kind)})`,
+      }}
+    />
+  )
+}
+
+function AccentHalo({ kind }: { kind: ExperienceKind }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute -right-14 -top-14 z-0 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+      style={{
+        ...cardTransitionStyle,
+        backgroundColor: `rgb(${getAccentRgbToken(kind)} / 0.14)`,
+      }}
+    />
+  )
+}
+
+function trimMission(mission: string, maxLength: number) {
+  if (mission.length <= maxLength) return mission
+  return `${mission.slice(0, Math.max(0, maxLength - 1)).trimEnd()}…`
 }
 
 function getFallbackCharacter(entry: ExperienceEntry) {
@@ -308,22 +409,43 @@ function CornerCrosshairs() {
   )
 }
 
-function OpenLogCta({ label, slug, reduceMotion }: { label: string; slug: string; reduceMotion: boolean }) {
+function OpenLogCta({
+  label,
+  slug,
+  reduceMotion,
+  kind = 'work',
+  size = 'default',
+}: {
+  label: string
+  slug: string
+  reduceMotion: boolean
+  kind?: ExperienceKind
+  size?: 'default' | 'compact'
+}) {
+  const accentClass = isWarmKind(kind)
+    ? 'border-[rgb(var(--accent-warm)/0.5)] bg-[rgb(var(--accent-warm)/0.08)] text-[rgb(var(--accent-warm))] group-hover:border-[rgb(var(--accent-warm))] group-hover:bg-[rgb(var(--accent-warm)/0.14)] group-hover:shadow-[0_8px_24px_-12px_rgb(var(--accent-warm)/0.65)]'
+    : 'border-[rgb(var(--accent)/0.5)] bg-[rgb(var(--accent)/0.06)] text-[rgb(var(--accent))] group-hover:border-[rgb(var(--accent))] group-hover:bg-[rgb(var(--accent)/0.14)] group-hover:shadow-[0_8px_24px_-12px_rgb(var(--accent)/0.65)]'
+  const sizeClass =
+    size === 'compact'
+      ? 'gap-1.5 px-2.5 py-1 text-[10px] tracking-[0.18em]'
+      : 'gap-2 px-3 py-1.5 text-[11px] tracking-[0.22em]'
+
   return (
     <span
       aria-hidden="true"
-      className="relative inline-flex items-center gap-2 self-start rounded-md border border-[rgb(var(--accent)/0.5)] bg-[rgb(var(--accent)/0.06)] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.22em] text-[rgb(var(--accent))] shadow-[inset_0_-1px_0_rgb(var(--accent)/0.15)] transition-[border-color,background-color,box-shadow,color] duration-300 group-hover:border-[rgb(var(--accent))] group-hover:bg-[rgb(var(--accent)/0.14)] group-hover:shadow-[0_8px_24px_-12px_rgb(var(--accent)/0.65)] motion-reduce:transition-none"
+      className={`relative inline-flex items-center self-start rounded-md border font-mono uppercase shadow-[inset_0_-1px_0_rgb(var(--foreground)/0.08)] transition-[border-color,background-color,box-shadow,color] duration-300 motion-reduce:transition-none ${accentClass} ${sizeClass}`}
       style={cardTransitionStyle}
     >
       <span>{label}</span>
       <span className="text-[rgb(var(--text-muted))]">/{slug}</span>
       <motion.span
-        className="text-[rgb(var(--accent))]"
+        className={isWarmKind(kind) ? 'text-[rgb(var(--accent-warm))]' : 'text-[rgb(var(--accent))]'}
         animate={
           reduceMotion
             ? undefined
             : {
-                x: [0, 4, 0, 4, 0],
+                x: [0, 2, 0, 2, 0],
+                y: [0, -1, 0, -1, 0],
                 opacity: [1, 1, 0.7, 1, 1],
               }
         }
@@ -338,7 +460,7 @@ function OpenLogCta({ label, slug, reduceMotion }: { label: string; slug: string
               }
         }
       >
-        →
+        ↗
       </motion.span>
     </span>
   )
@@ -394,46 +516,6 @@ function AchievementsRow({ items, dense = false }: { items: string[]; dense?: bo
           <span>{item}</span>
         </span>
       ))}
-    </div>
-  )
-}
-
-/** Compact mission preview panel — animated in/out with AnimatePresence */
-function MissionPreview({ snippet, reduceMotion }: { snippet: string; reduceMotion: boolean }) {
-  if (!snippet) return null
-  return (
-    <motion.div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-8"
-      style={{
-        background:
-          'linear-gradient(to top, rgb(var(--surface-card)) 60%, rgb(var(--surface-card) / 0))',
-      }}
-      initial={reduceMotion ? undefined : { opacity: 0, y: 8 }}
-      animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      exit={reduceMotion ? undefined : { opacity: 0, y: 6 }}
-      transition={reduceMotion ? undefined : { duration: 0.28, ease: EASE_OUT_QUART }}
-    >
-      <p className="line-clamp-3 font-mono text-[11px] leading-relaxed text-[rgb(var(--text-secondary)/0.9)]">
-        {snippet}
-      </p>
-    </motion.div>
-  )
-}
-
-function HoverQuoteTeaser({ quote }: { quote: string }) {
-  if (!quote) return null
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[100%] bg-gradient-to-t from-[rgb(var(--surface-card))] via-[rgb(var(--surface-card)/0.96)] to-[rgb(var(--surface-card)/0.0)] px-5 pb-5 pt-10 opacity-0 transition-[transform,opacity] duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none"
-      style={cardTransitionStyle}
-    >
-      <p className="font-mono text-[12px] italic leading-relaxed text-[rgb(var(--text-secondary))]">
-        <span className="text-[rgb(var(--accent))]">&ldquo;</span>
-        {quote}
-        <span className="text-[rgb(var(--accent))]">&rdquo;</span>
-      </p>
     </div>
   )
 }
