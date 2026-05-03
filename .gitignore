@@ -57,6 +57,7 @@ tasks/
 
 # Internal advisor artifacts and project memory
 /.omc/
+/.codex/
 /.codex-spawn/
 
 # Runtime tracking data (private)

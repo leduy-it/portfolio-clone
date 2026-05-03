@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "noEmit": true
+  },
+  "include": [
+    "./**/*.ts",
+    "../playwright.config.ts"
+  ],
+  "exclude": [
+    "../src",
+    "../node_modules"
+  ]
+}
