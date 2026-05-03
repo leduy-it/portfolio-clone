@@ -379,7 +379,7 @@ function HoverUnderline() {
   )
 }
 
-function CornerCrosshairs() {
+function CornerCrosshairs({ kind = 'work' }: { kind?: ExperienceKind }) {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">
       {(['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const).map((corner) => {
@@ -400,8 +400,11 @@ function CornerCrosshairs() {
         return (
           <span
             key={corner}
-            className={`${base} ${positions[corner]} ${borders[corner]} border-[rgb(var(--accent)/0.85)] group-hover:scale-110`}
-            style={cardTransitionStyle}
+            className={`${base} ${positions[corner]} ${borders[corner]} group-hover:scale-110`}
+            style={{
+              ...cardTransitionStyle,
+              borderColor: `rgb(${getAccentRgbToken(kind)} / 0.85)`,
+            }}
           />
         )
       })}
