@@ -9,6 +9,7 @@
 
 # next.js
 /.next/
+/.next-build/
 /out/
 
 # production
@@ -47,3 +48,16 @@ next-env.d.ts
 
 # claude
 /.claude/
+
+# review/task files (do not commit)
+/tasks/
+
+# Internal codex orchestration
+tasks/
+
+# Internal advisor artifacts and project memory
+/.omc/
+/.codex-spawn/
+
+# Runtime tracking data (private)
+/data/
