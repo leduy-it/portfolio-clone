@@ -1,0 +1,394 @@
+[
+  {
+    "title": "Dune: Part Three",
+    "slug": "dune-part-three",
+    "director": "Denis Villeneuve",
+    "year": "2026",
+    "runtime": "TBC",
+    "runtime_vi": "Chưa rõ",
+    "letterboxdRating": "IMDb 8.5",
+    "tagline": "the desert finally answers",
+    "tagline_vi": "sa mạc rốt cuộc lên tiếng",
+    "story": "Some films arrive like weather, and this one already feels like the pressure dropping before a storm. I keep imagining the sound of sand as an operating system: ancient, indifferent, exact. Anticipation is its own kind of pilgrimage. The desert has a way of making patience feel earned.",
+    "story_vi": "Có những bộ phim đến như thời tiết — và phim này đã cho cảm giác áp suất đang hạ trước một cơn bão. Tôi cứ tưởng tượng tiếng cát chảy như một hệ điều hành: cổ xưa, dửng dưng, chính xác. Bản thân sự chờ đợi đã là một cuộc hành hương. Sa mạc có cái cách khiến lòng kiên nhẫn cảm thấy được đền đáp.",
+    "hook": "Anticipation as its own kind of pilgrimage — the desert hasn't even spoken yet, and I already feel the room go quiet.",
+    "hook_vi": "Sự chờ đợi như một cuộc hành hương riêng — sa mạc chưa cất lời, mà căn phòng đã lặng im rồi.",
+    "perspectives": [
+      {
+        "title": "scale / sound design",
+        "body": "Villeneuve treats sound like a load-bearing wall. The half-second of silence before each cataclysm is doing more work than most third acts."
+      },
+      {
+        "title": "myth vs. man",
+        "body": "The whole arc is a man trying to outrun the prophecy he just became. The film should keep asking whether agency survives a story this large."
+      },
+      {
+        "title": "engineering parallel",
+        "body": "It feels like shipping a system bigger than you — every decision compounds, every shortcut becomes folklore, and you're never the only architect in the room."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "quy mô / thiết kế âm thanh",
+        "body_vi": "Villeneuve dùng âm thanh như một bức tường chịu lực. Nửa giây im lặng trước mỗi đại họa — gánh nhiều hơn toàn bộ hồi ba của hầu hết các phim."
+      },
+      {
+        "title_vi": "huyền thoại đối mặt con người",
+        "body_vi": "Toàn bộ hành trình là một người đàn ông đang cố chạy trước lời tiên tri mà anh ta vừa trở thành. Bộ phim phải cứ hỏi mãi — liệu ý chí cá nhân còn sống được trong một câu chuyện lớn đến vậy không."
+      },
+      {
+        "title_vi": "tương đồng kỹ thuật",
+        "body_vi": "Cảm giác như đang ship một hệ thống lớn hơn bản thân — mỗi quyết định chồng chất, mỗi shortcut thành giai thoại, và bạn không bao giờ là kiến trúc sư duy nhất trong phòng."
+      }
+    ],
+    "lesson": "Some projects you build are bigger than you. The discipline is in choosing carefully which of those calls you answer, and showing up honest when you do.",
+    "lesson_vi": "Có những dự án bạn xây dựng lớn hơn chính bạn. Kỷ luật nằm ở chỗ chọn cẩn thận lời gọi nào bạn đáp — và thành thật khi bước vào.",
+    "tags": ["sci-fi", "denis-villeneuve", "anticipated"],
+    "image": "https://image.tmdb.org/t/p/original/aTyvZpciTb9Y9wfdcwD3eVDj93E.jpg",
+    "alt": "Dune: Part Three (2026) official poster",
+    "alt_vi": "Poster chính thức Dune: Phần Ba (2026)"
+  },
+  {
+    "title": "Oppenheimer",
+    "slug": "oppenheimer",
+    "director": "Christopher Nolan",
+    "year": "2023",
+    "runtime": "180 min",
+    "runtime_vi": "180 phút",
+    "letterboxdRating": "IMDb 8.3",
+    "tagline": "the room starts glowing before anyone speaks",
+    "tagline_vi": "căn phòng bắt đầu phát sáng trước khi ai cất lời",
+    "story": "The film glows like hot metal left too long in the dark. Every room feels full of equations and consequences, the kind of air you can taste before something irreversible ships. It makes me think about the moral weight of building a thing whose blast radius you cannot unsee. After it ends, silence feels engineered.",
+    "story_vi": "Bộ phim phát sáng như kim loại nóng để quá lâu trong bóng tối. Mỗi căn phòng đều đặc phương trình và hậu quả — thứ không khí bạn có thể nếm thấy trước khi điều gì đó không thể đảo ngược được ship ra đời. Nó khiến tôi nghĩ về gánh nặng đạo đức của việc xây thứ mà bán kính nổ của nó — bạn không thể nào quên được. Khi phim kết thúc, sự im lặng cảm giác như đã được thiết kế.",
+    "hook": "Rooms full of equations and consequences — by the end, even silence feels engineered.",
+    "hook_vi": "Những căn phòng đặc phương trình và hậu quả — đến cuối phim, ngay cả sự im lặng cũng cảm giác như có người dàn dựng.",
+    "perspectives": [
+      {
+        "title": "moral weight of shipping",
+        "body": "Nolan refuses to let the audience sit on the side of cleverness. Every breakthrough is filmed like an apology in advance."
+      },
+      {
+        "title": "sound as anxiety",
+        "body": "The score doesn't accompany the film, it pre-answers questions the dialogue hasn't asked yet. That's editing as worry."
+      },
+      {
+        "title": "pacing as ethics",
+        "body": "The hearing scenes drag on purpose. They're a long, deliberate refusal to let history move faster than its consequences."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "gánh nặng đạo đức khi ship",
+        "body_vi": "Nolan từ chối để khán giả ngồi an toàn bên phía sự thông minh. Mỗi đột phá được quay như một lời xin lỗi báo trước."
+      },
+      {
+        "title_vi": "nhạc phim như nỗi lo âu",
+        "body_vi": "Phần nhạc nền không đi kèm bộ phim — nó trả lời trước những câu hỏi mà lời thoại chưa kịp đặt ra. Đó là dựng phim như một cơn âu lo vô hình."
+      },
+      {
+        "title_vi": "nhịp kể như đạo đức",
+        "body_vi": "Các cảnh điều trần kéo dài — có chủ đích. Đó là sự từ chối dài và cố tình, không cho phép lịch sử di chuyển nhanh hơn hậu quả của chính nó."
+      }
+    ],
+    "lesson": "Building powerful things forces moral debt. The only honest answer is to keep paying attention long after the demo is over.",
+    "lesson_vi": "Xây dựng những thứ mạnh mẽ tạo ra nợ đạo đức. Câu trả lời thành thật duy nhất là tiếp tục chú ý — lâu sau khi demo đã kết thúc.",
+    "tags": ["historical", "nolan", "moral-weight"],
+    "image": "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    "alt": "Oppenheimer (2023) poster",
+    "alt_vi": "Poster phim Oppenheimer (2023)"
+  },
+  {
+    "title": "Interstellar",
+    "slug": "interstellar",
+    "director": "Christopher Nolan",
+    "year": "2014",
+    "runtime": "169 min",
+    "runtime_vi": "169 phút",
+    "letterboxdRating": "IMDb 8.7",
+    "tagline": "wonder held together by loneliness",
+    "tagline_vi": "sự kỳ diệu được giữ nguyên bởi nỗi cô đơn",
+    "story": "Cold blue light, dust in the farmhouse, organs that sound like time turning over in its sleep. It is a film about scale without ever losing the tremor in a human voice. The wonder lands because the loneliness lands first. Space has rarely felt so vast or so private.",
+    "story_vi": "Ánh sáng xanh lạnh. Bụi trong trang trại. Tiếng đàn organ như thời gian đang lật mình trong giấc ngủ. Đây là bộ phim về quy mô — mà không bao giờ đánh mất tiếng run trong giọng người. Sự kỳ diệu chạm đến được vì nỗi cô đơn chạm đến trước. Không gian hiếm khi cảm thấy vừa bao la vừa riêng tư đến vậy.",
+    "hook": "A film about scale that never loses the tremor in a human voice — the wonder lands because the loneliness lands first.",
+    "hook_vi": "Phim về quy mô — mà không bao giờ đánh mất tiếng run trong giọng người. Sự kỳ diệu chạm đến được vì nỗi cô đơn chạm đến trước.",
+    "perspectives": [
+      {
+        "title": "scale meets intimacy",
+        "body": "Every cosmic shot is paid for with a long tight close-up. Nolan only earns the spectacle by keeping the human face in frame."
+      },
+      {
+        "title": "scientific rigor as feeling",
+        "body": "The wormhole physics aren't decoration. The film treats correctness as emotional. Get the math wrong and the goodbye doesn't land."
+      },
+      {
+        "title": "time as antagonist",
+        "body": "The villain isn't the black hole. It's the relativity tax on every minute spent away. Time becomes a debt collector with infinite patience."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "quy mô chạm gần gũi",
+        "body_vi": "Mỗi cảnh quay vũ trụ được đổi bằng một cú close-up dài và sát mặt. Nolan chỉ kiếm được sự hoành tráng khi vẫn giữ khuôn mặt người trong khung hình."
+      },
+      {
+        "title_vi": "vật lý như cảm xúc",
+        "body_vi": "Vật lý lỗ sâu không phải trang trí. Bộ phim coi sự chính xác như một yếu tố cảm xúc — sai phép tính thì lời tạm biệt không đến được."
+      },
+      {
+        "title_vi": "thời gian như kẻ phản diện",
+        "body_vi": "Kẻ phản diện không phải hố đen. Đó là thuế tương đối tính trên từng phút xa cách. Thời gian trở thành người đòi nợ — với sự kiên nhẫn vô tận."
+      }
+    ],
+    "lesson": "Big systems and human softness aren't opposites. The best engineering keeps both true at the same time, and never abandons one for the other.",
+    "lesson_vi": "Hệ thống lớn và sự mềm mỏng của con người không phải đối lập. Kỹ thuật tốt nhất giữ cả hai cùng thật — và không bao giờ bỏ cái này vì cái kia.",
+    "tags": ["sci-fi", "space", "nolan"],
+    "image": "https://image.tmdb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    "alt": "Interstellar (2014) poster",
+    "alt_vi": "Poster phim Interstellar (2014)"
+  },
+  {
+    "title": "Blade Runner 2049",
+    "slug": "blade-runner-2049",
+    "director": "Denis Villeneuve",
+    "year": "2017",
+    "runtime": "164 min",
+    "runtime_vi": "164 phút",
+    "letterboxdRating": "IMDb 8.0",
+    "tagline": "synth chords carved into concrete",
+    "tagline_vi": "hợp âm synth khắc vào bê tông",
+    "story": "Slow on purpose. Quiet on purpose. The film keeps asking what counts as real and refuses to flinch from the answer. Roger Deakins lights every frame like a memory you're not sure you had. The patience is the point.",
+    "story_vi": "Chậm — có chủ đích. Im lặng — có chủ đích. Bộ phim cứ hỏi mãi điều gì mới được coi là thật, rồi từ chối né tránh câu trả lời. Roger Deakins thắp sáng từng khung hình như một ký ức bạn không chắc mình đã có. Sự kiên nhẫn chính là điều bộ phim muốn nói.",
+    "hook": "Slow on purpose, quiet on purpose — every frame lit like a memory you're not sure you had.",
+    "hook_vi": "Chậm có chủ đích, im lặng có chủ đích — mỗi khung hình sáng lên như ký ức bạn không chắc mình đã có.",
+    "perspectives": [
+      {
+        "title": "aesthetic patience",
+        "body": "It's the rare blockbuster that trusts its audience to sit inside silence. Villeneuve treats negative space like dialogue."
+      },
+      {
+        "title": "identity questions",
+        "body": "Joi, the replicant, the memory implants — the film keeps asking whether what you feel is yours. The answer is not comforting."
+      },
+      {
+        "title": "sequel as commentary",
+        "body": "It quietly outdoes the original by refusing to outshine it. That kind of restraint is its own argument about legacy."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "kiên nhẫn thẩm mỹ",
+        "body_vi": "Đây là blockbuster hiếm hoi dám tin tưởng khán giả ngồi yên trong im lặng. Villeneuve dùng khoảng trống như lời thoại."
+      },
+      {
+        "title_vi": "câu hỏi về bản sắc",
+        "body_vi": "Joi, replicant, ký ức cấy ghép — bộ phim cứ hỏi mãi liệu thứ bạn cảm thấy có thực sự là của bạn. Câu trả lời không dễ chịu."
+      },
+      {
+        "title_vi": "phần tiếp như bình luận",
+        "body_vi": "Nó lặng lẽ vượt qua bản gốc bằng cách từ chối che khuất bản gốc. Sự kiềm chế đó tự nó đã là một luận điểm về di sản."
+      }
+    ],
+    "lesson": "Slow can be powerful. Don't confuse speed with depth, and don't apologise for asking the audience to wait.",
+    "lesson_vi": "Chậm có thể mạnh. Đừng nhầm tốc độ với chiều sâu — và đừng xin lỗi vì đã yêu cầu khán giả chờ.",
+    "tags": ["sci-fi", "villeneuve", "deakins"],
+    "image": "https://image.tmdb.org/t/p/original/aMpyrCizvSdc0UIMblJ1srVgAEF.jpg",
+    "alt": "Blade Runner 2049 poster",
+    "alt_vi": "Poster phim Blade Runner 2049"
+  },
+  {
+    "title": "Arrival",
+    "slug": "arrival",
+    "director": "Denis Villeneuve",
+    "year": "2016",
+    "runtime": "116 min",
+    "runtime_vi": "116 phút",
+    "letterboxdRating": "IMDb 7.9",
+    "tagline": "the language of life beyond Earth",
+    "tagline_vi": "ngôn ngữ của sự sống ngoài Trái Đất",
+    "story": "First contact reimagined as linguistics, not spectacle. The film asks what it would take to speak with life outside Earth — and answers with patience, grief, and a sentence that bends time. It treats translation as a form of love. Few sci-fi films have felt this tender.",
+    "story_vi": "Tiếp xúc đầu tiên — được tái tưởng tượng như ngôn ngữ học, không phải màn trình diễn hoành tráng. Bộ phim hỏi cần gì để nói chuyện với sự sống ngoài Trái Đất — rồi trả lời bằng sự kiên nhẫn, nỗi đau, và một câu văn uốn cong thời gian. Nó coi dịch thuật là một hình thức yêu thương. Hiếm có phim sci-fi nào dịu dàng đến vậy.",
+    "hook": "Life outside Earth arrives, and the only weapon that matters is language — translation as a form of love.",
+    "hook_vi": "Sự sống ngoài Trái Đất đến — và vũ khí duy nhất có giá trị là ngôn ngữ. Dịch thuật như một hình thức yêu thương.",
+    "perspectives": [
+      {
+        "title": "linguistics as worldbuilding",
+        "body": "Heptapod logograms are the entire premise. Change how a sentence is built and you change how time itself folds in the reader."
+      },
+      {
+        "title": "grief in disguise",
+        "body": "The frame story is a magic trick. By the time you understand what you're really watching, you've already cried about it."
+      },
+      {
+        "title": "agent-design parallel",
+        "body": "Cooperation, not command, is the breakthrough. Useful intelligence is dialogic — both sides have to change shape to meet."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "ngôn ngữ học như xây dựng thế giới",
+        "body_vi": "Logogram của Heptapod là toàn bộ tiền đề. Thay đổi cách một câu được cấu trúc — bạn thay đổi cách thời gian gấp lại trong tâm trí người đọc."
+      },
+      {
+        "title_vi": "nỗi đau trá hình",
+        "body_vi": "Câu chuyện khung là một trò ảo thuật. Đến lúc bạn hiểu mình thực sự đang xem gì — bạn đã khóc vì nó rồi."
+      },
+      {
+        "title_vi": "tương đồng thiết kế agent",
+        "body_vi": "Hợp tác — không phải ra lệnh — mới là đột phá. Intelligence hữu ích mang tính đối thoại: cả hai phía phải thay đổi hình dạng để gặp được nhau."
+      }
+    ],
+    "lesson": "If you build agents, build for cooperation, not commands. The intelligences worth talking to are the ones willing to be changed by you.",
+    "lesson_vi": "Nếu bạn xây agent, hãy xây để hợp tác — không phải ra lệnh. Những intelligence đáng trò chuyện là những thứ sẵn sàng bị thay đổi bởi bạn.",
+    "tags": ["sci-fi", "linguistics", "villeneuve"],
+    "image": "https://image.tmdb.org/t/p/original/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg",
+    "alt": "Arrival (2016) poster — the heptapod shell hovering over a Montana field",
+    "alt_vi": "Poster Cuộc Đổ Bộ Bí Ẩn (2016) — vỏ tàu Heptapod lơ lửng trên cánh đồng Montana"
+  },
+  {
+    "title": "Project Hail Mary",
+    "slug": "project-hail-mary",
+    "director": "Phil Lord & Christopher Miller",
+    "year": "2026",
+    "runtime": "2h 36m",
+    "runtime_vi": "2 giờ 36 phút",
+    "letterboxdRating": "IMDb 8.4",
+    "tagline": "first contact, but the contact is engineering",
+    "tagline_vi": "tiếp xúc đầu tiên — nhưng điểm giao là kỹ thuật",
+    "story": "An astronaut wakes up alone, with the wrong memories, in a ship that should not exist — and the only way home is through pure problem-solving. The story lives by curiosity, friendship across species, and the joy of small wins inside a very large emergency. The film keeps that joy, and it lands.",
+    "story_vi": "Một phi hành gia thức dậy một mình — với ký ức sai, trong con tàu không nên tồn tại. Con đường duy nhất về nhà là giải quyết vấn đề thuần túy. Câu chuyện sống bằng sự tò mò, tình bạn xuyên loài, và niềm vui của từng chiến thắng nhỏ trong một tình huống khẩn cấp rất lớn. Bộ phim giữ được niềm vui đó — và nó đáp xuống chắc.",
+    "hook": "An astronaut, alone, solving for survival one small win at a time — and the friend he doesn't expect to make along the way.",
+    "hook_vi": "Một phi hành gia, một mình, giải bài toán sinh tồn từng chiến thắng nhỏ — và người bạn anh ta không ngờ sẽ gặp trên đường.",
+    "perspectives": [
+      {
+        "title": "problem-solving voice",
+        "body": "Andy Weir's narration is essentially an engineer thinking out loud. The film keeps that internal monologue alive without ever making it cute."
+      },
+      {
+        "title": "friendship across species",
+        "body": "The most surprising thing about the story is how warm it is. The collaboration is the climax, not just the setup."
+      },
+      {
+        "title": "isolation + craft",
+        "body": "Half the runtime is one person figuring out how to keep going. It only works because the craft of figuring it out is gripping."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "giọng giải quyết vấn đề",
+        "body_vi": "Lối kể của Andy Weir về bản chất là một kỹ sư đang suy nghĩ to. Bộ phim giữ độc thoại nội tâm đó sống động — mà không bao giờ làm nó trở nên giả tạo dễ thương."
+      },
+      {
+        "title_vi": "tình bạn xuyên loài",
+        "body_vi": "Điều bất ngờ nhất của câu chuyện là nó ấm áp đến mức nào. Sự hợp tác mới là cao trào — không chỉ là phần dẫn nhập."
+      },
+      {
+        "title_vi": "cô lập và tay nghề",
+        "body_vi": "Một nửa thời lượng phim là một người đang tìm cách tiếp tục sống. Nó chỉ hiệu quả vì chính cái tay nghề tìm ra ấy thực sự cuốn hút."
+      }
+    ],
+    "lesson": "Curiosity is engineering's emotional core. Lose it and you're just executing tickets. Keep it and even bad days have a small win in them.",
+    "lesson_vi": "Sự tò mò là lõi cảm xúc của kỹ thuật. Mất nó đi thì bạn chỉ đang thực thi ticket. Giữ nó lại — ngay cả những ngày tệ nhất cũng có một chiến thắng nhỏ ở đâu đó.",
+    "tags": ["sci-fi", "engineering", "andy-weir"],
+    "image": "/images/films/project-hail-mary.jpg",
+    "alt": "Project Hail Mary book cover (Andy Weir)",
+    "alt_vi": "Bìa sách Project Hail Mary (Andy Weir)"
+  },
+  {
+    "title": "Peaky Blinders",
+    "slug": "peaky-blinders",
+    "director": "Steven Knight",
+    "year": "2013–2022",
+    "runtime": "6 seasons",
+    "runtime_vi": "6 mùa",
+    "letterboxdRating": "IMDb 8.8",
+    "tagline": "a man who calculates faster than he flinches",
+    "tagline_vi": "người đàn ông tính nhanh hơn anh ta giật mình",
+    "story": "Birmingham smoke, slow-motion swagger, and Thomas Shelby treating every conversation like a chess move played three years ago. The series is about strategy under restraint — the discipline of not reacting until the moment you must. It teaches you that quiet is not weakness. It is preparation.",
+    "story_vi": "Khói Birmingham. Bước đi chậm rãi đầy uy lực. Thomas Shelby đối xử với mỗi cuộc trò chuyện như nước cờ đã tính từ ba năm trước. Bộ phim về chiến lược dưới sự kiềm chế — kỷ luật của việc không phản ứng cho đến khi bắt buộc phải làm. Nó dạy bạn rằng im lặng không phải yếu đuối. Đó là sự chuẩn bị.",
+    "hook": "Thomas Shelby treats every conversation like a chess move played three years ago — quiet as preparation, never as weakness.",
+    "hook_vi": "Thomas Shelby đối xử với mỗi cuộc trò chuyện như nước cờ đã tính từ ba năm trước — im lặng là chuẩn bị, không bao giờ là yếu đuối.",
+    "perspectives": [
+      {
+        "title": "discipline as armor",
+        "body": "Shelby's silence is the loudest thing on screen. The show uses restraint as its primary weapon — and rewards it more than violence."
+      },
+      {
+        "title": "family as system",
+        "body": "The Shelbys are an org chart with knives. Every loyalty is also leverage. Every favour is also a future debt. It's the cleanest depiction of a working business I know."
+      },
+      {
+        "title": "cinematography as character",
+        "body": "Slow-mo over Nick Cave is a stylistic choice that should feel ridiculous and instead feels mythic. Style is plot when you commit to it."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "kỷ luật như áo giáp",
+        "body_vi": "Sự im lặng của Shelby là thứ ồn ào nhất trên màn hình. Phim dùng kiềm chế như vũ khí chính — và thưởng cho nó nhiều hơn bạo lực."
+      },
+      {
+        "title_vi": "gia đình như hệ thống",
+        "body_vi": "Nhà Shelby là sơ đồ tổ chức có dao. Mỗi lòng trung thành cũng là đòn bẩy. Mỗi ân huệ cũng là khoản nợ tương lai. Đây là mô tả sắc nét nhất về một doanh nghiệp vận hành thực sự mà tôi từng thấy."
+      },
+      {
+        "title_vi": "quay phim như nhân vật",
+        "body_vi": "Slow-mo trên nền nhạc Nick Cave — lẽ ra phải buồn cười mà lại cảm giác như huyền thoại. Phong cách là cốt truyện khi bạn thực sự cam kết với nó."
+      }
+    ],
+    "lesson": "Strategy without restraint is theater. Strategy with restraint becomes a quiet kind of power — at work, at home, and in the rooms where you don't speak first.",
+    "lesson_vi": "Chiến lược không có kiềm chế là màn trình diễn. Chiến lược có kiềm chế trở thành một loại quyền lực thầm lặng — ở nơi làm việc, ở nhà, và trong những căn phòng bạn không lên tiếng trước.",
+    "tags": ["drama", "peaky-blinders", "tommy-shelby"],
+    "image": "https://image.tmdb.org/t/p/original/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
+    "alt": "Peaky Blinders poster — Thomas Shelby and family",
+    "alt_vi": "Poster Peaky Blinders — Thomas Shelby và gia đình"
+  },
+  {
+    "title": "All Quiet on the Western Front",
+    "slug": "all-quiet-on-the-western-front",
+    "director": "Edward Berger",
+    "year": "2022",
+    "runtime": "2h 28m",
+    "runtime_vi": "2 giờ 28 phút",
+    "letterboxdRating": "IMDb 7.8",
+    "tagline": "the cold last sentence",
+    "tagline_vi": "câu cuối cùng lạnh giá",
+    "story": "Erich Maria Remarque's 1929 anti-war novel — Im Westen nichts Neues, in Vietnamese Phía Tây không có gì lạ — restaged for screen as the slow erosion of body and spirit through the eyes of a young German soldier on the Western Front. The trenches are mud and noise and silence. The famous final sentence still lands like a cold gust through an empty room.",
+    "story_vi": "Tiểu thuyết phản chiến 1929 của Erich Maria Remarque — Im Westen nichts Neues, tiếng Việt là Phía Tây không có gì lạ — được đưa lên màn ảnh như sự bào mòn chậm rãi thể xác và tinh thần, qua đôi mắt một người lính Đức trẻ trên Mặt trận phía Tây. Chiến hào là bùn, tiếng ồn, và im lặng. Câu văn cuối nổi tiếng vẫn đáp xuống — lạnh như một cơn gió thổi qua căn phòng trống.",
+    "hook": "A young soldier's body and spirit slowly worn down — and a final sentence so cold it stays with you for years.",
+    "hook_vi": "Thể xác và tinh thần người lính trẻ bị bào mòn dần — và một câu cuối lạnh đến mức ở lại với bạn nhiều năm.",
+    "perspectives": [
+      {
+        "title": "literary fidelity",
+        "body": "Berger keeps the spine of Remarque's 1929 novel intact: war is not heroism, it is paperwork written in someone else's blood. The reverence shows in the pacing."
+      },
+      {
+        "title": "sound design of the trenches",
+        "body": "The film weaponises silence. The bursts of artillery aren't loud because they're loud — they're loud because of the stillness Berger built around them."
+      },
+      {
+        "title": "the politics of 'nothing happened today'",
+        "body": "The original title is the indictment. When the report from the front says 'nothing new in the West', it means a generation has just been quietly erased while the metric stayed flat."
+      }
+    ],
+    "perspectives_vi": [
+      {
+        "title_vi": "trung thành với nguyên tác",
+        "body_vi": "Berger giữ nguyên cột sống tiểu thuyết 1929 của Remarque: chiến tranh không phải anh hùng — đó là giấy tờ hành chính viết bằng máu người khác. Sự kính trọng đó hiện ra trong từng nhịp kể."
+      },
+      {
+        "title_vi": "thiết kế âm thanh chiến hào",
+        "body_vi": "Bộ phim vũ khí hóa sự im lặng. Tiếng pháo không ồn vì nó to — nó ồn vì sự tĩnh lặng mà Berger đã dựng xung quanh nó."
+      },
+      {
+        "title_vi": "chính trị của câu 'hôm nay không có gì'",
+        "body_vi": "Nhan đề gốc chính là bản cáo trạng. Khi báo cáo từ mặt trận ghi 'không có gì mới ở phía Tây' — nghĩa là một thế hệ vừa bị xóa sổ lặng lẽ, trong khi chỉ số vẫn đứng yên."
+      }
+    ],
+    "lesson": "When the dashboard says 'all quiet' and the cost is invisible, look closer. The most dangerous metric is the one that doesn't move while everything underneath it does.",
+    "lesson_vi": "Khi dashboard báo 'tất cả yên tĩnh' mà cái giá vô hình — hãy nhìn gần hơn. Chỉ số nguy hiểm nhất là thứ không di chuyển trong khi mọi thứ bên dưới nó đang chuyển động.",
+    "tags": ["war", "anti-war", "remarque"],
+    "image": "https://image.tmdb.org/t/p/original/hYqOjJ7Gh1fbqXrxlIao1g8ZehF.jpg",
+    "alt": "All Quiet on the Western Front (2022) poster",
+    "alt_vi": "Poster phim Phía Tây không có gì lạ (2022)"
+  }
+]

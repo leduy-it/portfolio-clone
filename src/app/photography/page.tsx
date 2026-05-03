@@ -1,5 +1,13 @@
+import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
-import photographyData from '@/data/photography.json'
+import filmsData from '@/data/films.json'
+import { buildMetadataOg } from '@/lib/og-meta'
+
+export const metadata: Metadata = buildMetadataOg({
+  title: 'Cinema — films I keep returning to',
+  description: 'Multi-angle notes on the films that lodged themselves in how I think about pacing, restraint, and the cost of saying too much.',
+  route: 'cinema',
+})
 import PhotographyHero from '@/components/photography/photography-hero'
 
 const PhotoGallery = dynamic(
@@ -11,7 +19,7 @@ export default function PhotographyPage() {
   return (
     <main className="min-h-screen bg-[rgb(var(--background))]">
       <PhotographyHero />
-      <PhotoGallery photos={photographyData} />
+      <PhotoGallery films={filmsData} />
     </main>
   )
 }

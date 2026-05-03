@@ -1,75 +1,51 @@
 'use client'
 
-import { useState } from 'react'
+import { useLocale } from '@/lib/i18n'
 import PhotoCard from './photo-card'
 
-interface PhotoData {
+interface FilmData {
   title: string
+  title_vi?: string
   slug: string
-  category: string
-  camera: string
-  lens: string
-  location: string
-  date: string
-  description: string
+  director: string
+  year: string
+  runtime: string
+  runtime_vi?: string
+  letterboxdRating: string
+  tagline: string
+  tagline_vi?: string
   story: string
+  story_vi?: string
+  tags: string[]
   image: string
   alt: string
+  alt_vi?: string
 }
 
 interface PhotoGalleryProps {
-  photos: PhotoData[]
+  films: FilmData[]
 }
 
-type FilterCategory = 'all' | 'portrait' | 'street'
-
-export default function PhotoGallery({ photos }: PhotoGalleryProps) {
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>('all')
-
-  let portraitCount = 0, streetCount = 0
-  for (const p of photos) {
-    if (p.category === 'portrait') portraitCount++
-    else if (p.category === 'street') streetCount++
-  }
-
-  const filtered =
-    activeFilter === 'all'
-      ? photos
-      : photos.filter((p) => p.category === activeFilter)
-
-  const filters: { key: FilterCategory; label: string; count: number }[] = [
-    { key: 'all', label: 'All', count: photos.length },
-    { key: 'portrait', label: 'Portrait', count: portraitCount },
-    { key: 'street', label: 'Street', count: streetCount },
-  ]
+export default function PhotoGallery({ films }: PhotoGalleryProps) {
+  const { t } = useLocale()
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-12">
-      <h2 className="text-4xl font-bold text-white text-center mb-8">
-        People In Frames
-      </h2>
-
-      {/* Filter buttons - terminal style */}
-      <div className="flex items-center justify-center gap-3 mb-10">
-        {filters.map(({ key, label, count }) => (
-          <button
-            key={key}
-            onClick={() => setActiveFilter(key)}
-            className={`px-4 py-2 text-sm font-medium font-mono border-2 transition-all duration-300 ease-out transform hover:scale-105 ${
-              activeFilter === key
-                ? 'border-[rgb(var(--accent))] text-[rgb(var(--accent))] bg-[rgb(var(--accent))]/20 shadow-lg shadow-[rgb(var(--accent))]/20 scale-105'
-                : 'border-[rgb(var(--border))] text-[rgb(var(--text-secondary))] hover:border-[rgb(var(--accent))] hover:text-[rgb(var(--accent))] hover:shadow-md'
-            }`}
-          >
-            $ls {label.toLowerCase()}({count})
-          </button>
-        ))}
+    <section className="mx-auto max-w-[1440px] px-6 sm:px-8 lg:px-12 py-16">
+      <div className="mb-14 flex flex-col gap-3">
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-[rgb(var(--accent))]">
+          {t('cinema.galleryEyebrow')}
+        </p>
+        <h2 className="text-3xl font-semibold text-white sm:text-4xl lg:text-5xl">
+          {t('cinema.galleryTitle')}
+        </h2>
+        <p className="max-w-3xl font-mono text-sm leading-relaxed text-[rgb(var(--text-secondary))]">
+          {t('cinema.galleryBody')}
+        </p>
       </div>
 
-      {/* Photo grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filtered.map((photo) => (
-          <PhotoCard key={photo.slug} photo={photo} />
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:gap-10">
+        {films.map((film, index) => (
+          <PhotoCard key={film.slug} film={film} index={index} />
         ))}
       </div>
     </section>
